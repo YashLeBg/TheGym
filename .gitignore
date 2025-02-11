@@ -1,7 +1,18 @@
-
 ### Symfony
 .env**
 config/secrets/prod/prod.decrypt.private.php
 public/bundles/
 var/
 vendor/
+
+### Angular
+.vscode/
+dist/
+tmp/
+node_modules/
+package-lock.json
+.angular/
+
+# System files
+.DS_Store
+Thumbs.db
