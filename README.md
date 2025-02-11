@@ -59,7 +59,7 @@ JWT_PASSPHRASE=poop_my_gym
 
 ```bash
 # Créer la base de données avec votre méthode préférée
-symfony console doctrine:migrations:migrate
+php bin/console doctrine:migrations:migrate
 ```
 
 5. Démarrer le serveur Symfony
