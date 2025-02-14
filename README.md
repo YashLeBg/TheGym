@@ -55,11 +55,12 @@ JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=poop_my_gym
 ```
 
-4. Lancer la base de données et exécuter les migrations
+4. Lancer la base de données et exécuter les migrations et les fixtures
 
 ```bash
 # Créer la base de données avec votre méthode préférée
 php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
 ```
 
 5. Démarrer le serveur Symfony
