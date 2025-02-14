@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FicheDePaieRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FicheDePaieRepository::class)]
@@ -17,8 +18,8 @@ class FicheDePaie
     #[ORM\JoinColumn(nullable: false)]
     private ?Coach $coach = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $periode = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $periode = null;
 
     #[ORM\Column]
     private ?int $total_heures = null;
@@ -43,12 +44,12 @@ class FicheDePaie
         return $this;
     }
 
-    public function getPeriode(): ?string
+    public function getPeriode(): ?\DateTimeInterface
     {
         return $this->periode;
     }
 
-    public function setPeriode(string $periode): static
+    public function setPeriode(\DateTimeInterface $periode): static
     {
         $this->periode = $periode;
 
