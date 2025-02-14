@@ -1,6 +1,7 @@
 ### Symfony
 .env**
 config/secrets/prod/prod.decrypt.private.php
+config/jwt/*.pem
 public/bundles/
 var/
 vendor/
