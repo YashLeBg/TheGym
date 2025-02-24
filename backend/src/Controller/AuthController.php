@@ -24,9 +24,9 @@ final class AuthController extends AbstractController
                 'email' => $user->getUserIdentifier(),
                 'roles' => $user->getRoles(),
             ]);
+        } else {
+            return new JsonResponse(null);
         }
-
-        return new JsonResponse(null);
     }
 
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]

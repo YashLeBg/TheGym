@@ -10,9 +10,17 @@ use App\Entity\Sportif;
 use App\Entity\Utilisateur;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class TheGymFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $encoder;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->encoder = $passwordHasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
 
@@ -73,7 +81,7 @@ class TheGymFixtures extends Fixture
             ->setNom("BUMSTEAD")
             ->setPrenom("Christopher")
             ->setEmail("christopher.bumstead@the-gym.fr")
-            ->setPassword("password-responsable")
+            ->setPassword($this->encoder->hashPassword($responsable, "password-responsable"))
             ->setRoles(["ROLE_RESPONSABLE"]);
 
         return $responsable;
@@ -88,7 +96,7 @@ class TheGymFixtures extends Fixture
             ->setNom("MAURIAC")
             ->setPrenom("Jimmy")
             ->setEmail("jimmy.mauriac@gmail.com")
-            ->setPassword("password-sportif")
+            ->setPassword($this->encoder->hashPassword($sportif_1, "password-sportif"))
             ->setRoles(["ROLE_SPORTIF"])
             ->setDateIncription(new \DateTime("2025-02-14"))
             ->setNiveauSportif("debutant");
@@ -99,7 +107,7 @@ class TheGymFixtures extends Fixture
             ->setNom("MOHAMED")
             ->setPrenom("Anli-Yachourti")
             ->setEmail("anli-yachourti.mohamed@gmail.com")
-            ->setPassword("password-sportif")
+            ->setPassword($this->encoder->hashPassword($sportif_2, "password-sportif"))
             ->setRoles(["ROLE_SPORTIF"])
             ->setDateIncription(new \DateTime("2025-02-14"))
             ->setNiveauSportif("intermediaire");
@@ -110,7 +118,7 @@ class TheGymFixtures extends Fixture
             ->setNom("RECORD")
             ->setPrenom("Bastien")
             ->setEmail("bastien.record@gmail.com")
-            ->setPassword("password-sportif")
+            ->setPassword($this->encoder->hashPassword($sportif_3, "password-sportif"))
             ->setRoles(["ROLE_SPORTIF"])
             ->setDateIncription(new \DateTime("2025-02-14"))
             ->setNiveauSportif("avance");
@@ -128,7 +136,7 @@ class TheGymFixtures extends Fixture
             ->setNom("PLATZ")
             ->setPrenom("Tom")
             ->setEmail("tom.platz@the-gym.fr")
-            ->setPassword("password-coach")
+            ->setPassword($this->encoder->hashPassword($coach_1, "password-coach"))
             ->setRoles(["ROLE_COACH"])
             ->setSpecialites(["bodybuilding"])
             ->setTarifHoraire(50.00);
@@ -139,7 +147,7 @@ class TheGymFixtures extends Fixture
             ->setNom("NFC")
             ->setPrenom("Essan")
             ->setEmail("essan.nfc@the-gym.fr")
-            ->setPassword("password-coach")
+            ->setPassword($this->encoder->hashPassword($coach_2, "password-coach"))
             ->setRoles(["ROLE_COACH"])
             ->setSpecialites(["bodybuilding", "crossfit"])
             ->setTarifHoraire(80.00);
@@ -150,7 +158,7 @@ class TheGymFixtures extends Fixture
             ->setNom("TARIDINIS")
             ->setPrenom("Panagiotis")
             ->setEmail("taridinis.panagiotis@the-gym.fr")
-            ->setPassword("password-coach")
+            ->setPassword($this->encoder->hashPassword($coach_3, "password-coach"))
             ->setRoles(["ROLE_COACH"])
             ->setSpecialites(["powerlifting", "streetlifting"])
             ->setTarifHoraire(65.00);
