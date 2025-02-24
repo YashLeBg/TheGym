@@ -3,10 +3,24 @@
     <a class="navbar-brand" href="/">
       <img src="favicon.ico" width="50" height="50">
     </a>
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+      aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.currentAuthUserValue.isLogged()">
+          <button class="nav-link" (click)="logout()">
+            Déconnexion
+          </button>
+        </li>
+        <li class="nav-item" *ngIf="!authService.currentAuthUserValue.isLogged()">
+          <a class="nav-link" routerLink="/login">
+            Connexion
+          </a>
         </li>
       </ul>
     </div>
