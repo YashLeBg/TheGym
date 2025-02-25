@@ -31,8 +31,8 @@ export class AuthUser {
 
 export class AuthService {
 
-  private apiUrlLogin = 'https://localhost:8008/api/login';
-  private apiUrlUserInfo = 'https://localhost:8008/api/user/me';
+  private apiUrlLogin = 'http://localhost:8008/api/login';
+  private apiUrlUserInfo = 'http://localhost:8008/api/user/me';
 
   private localStorageToken = 'currentToken';
 
@@ -74,7 +74,7 @@ export class AuthService {
   }
 
   public login(email: string, password: string): Observable<boolean> {
-    return this.http.post<any>(this.apiUrlLogin, { email, password })
+    return this.http.post<any>(this.apiUrlLogin, { email: email, password: password })
       .pipe(map(response => {
         if (response.token) {
           this.updateUserInfo(response.token);
