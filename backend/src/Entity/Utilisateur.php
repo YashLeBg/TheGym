@@ -6,6 +6,7 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -15,15 +16,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private array $roles = [];
 
     /**
@@ -33,9 +37,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?string $prenom = null;
 
     public function getId(): ?int

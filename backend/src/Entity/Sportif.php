@@ -7,14 +7,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SportifRepository::class)]
 class Sportif extends Utilisateur
 {
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?\DateTimeInterface $date_incription = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private ?string $niveau_sportif = null;
 
     /**
