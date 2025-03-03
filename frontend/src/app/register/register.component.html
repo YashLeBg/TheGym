@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+    <div class="w-100 card bg-light mb-3">
+        <div class="card-header text-center">Inscription</div>
+        <div class="card-body">
+            <form (ngSubmit)="onSubmit()" class="d-flex flex-column">
+                <div class="form-group">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" class="form-control" id="nom" [(ngModel)]="model.nom" name="nom" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="prenom" class="form-label">Prénom</label>
+                    <input type="text" class="form-control" id="prenom" [(ngModel)]="model.prenom" name="prenom"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" [(ngModel)]="model.email" name="email" required>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" [(ngModel)]="model.password"
+                        name="password" required>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="niveau_sportif" class="form-label">Niveau</label>
+                    <select class="form-control" id="niveau_sportif" [(ngModel)]="model.niveau_sportif"
+                        name="niveau_sportif" required>
+                        <option value="debutant">Débutant</option>
+                        <option value="intermediaire">Intermédiaire</option>
+                        <option value="avance">Avancé</option>
+                    </select>
+                </div>
+
+                <div *ngIf="model.error" class="form-group mt-4">
+                    <p class="text-danger text-center">Email ou mot de passe incorrect</p>
+                </div>
+
+                <button type="submit" class="btn btn-success mt-4">S'INSCRIRE</button>
+            </form>
+        </div>
+    </div>
+</div>
