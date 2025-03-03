@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Sportif;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
@@ -27,6 +26,15 @@ class SportifCrudController extends AbstractCrudController
     public function __construct(
         private UserPasswordHasherInterface $encoder
     ) {}
+
+    public function configureActions(Actions $actions): Actions
+    {
+        if (!$this->isGranted('ROLE_RESPONSABLE')) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour accéder à cette page');
+        }
+
+        return $actions;
+    }
 
     public static function getEntityFqcn(): string
     {
