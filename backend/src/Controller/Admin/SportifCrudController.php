@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -38,16 +40,52 @@ class SportifCrudController extends AbstractCrudController
         ];
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id')->hideOnForm(),
+            ChoiceField::new('roles')
+                ->setLabel('Rôle')
+                ->setChoices(['Sportif' => 'ROLE_SPORTIF'])
+                ->setRequired(true)
+                ->hideWhenCreating()
+                ->hideOnIndex()
+                ->hideOnForm()
+                ->setFormTypeOption('data', 'ROLE_SPORTIF'),
+            TextField::new('nom')
+                ->setLabel('Nom')
+                ->setRequired(true),
+            TextField::new('prenom')
+                ->setLabel('Prénom')
+                ->setRequired(true),
+            EmailField::new('email')
+                ->setLabel('Email')
+                ->setRequired(true),
+            TextField::new('password')
+                ->setLabel('Mot de passe')
+                ->setFormType(RepeatedType::class)
+                ->setFormTypeOptions([
+                    'type' => PasswordType::class,
+                    'first_options' => ['label' => 'Mot de passe'],
+                    'second_options' => ['label' => 'Répéter le mot de passe'],
+                    'mapped' => false
+                ])
+                ->setRequired($pageName === Crud::PAGE_NEW)
+                ->onlyOnForms(),
+            ChoiceField::new('niveau_sportif')
+                ->setLabel('Niveau sportif')
+                ->setChoices([
+                    'Débutant' => 'debutant',
+                    'Intermédiaire' => 'intermediaire',
+                    'Avancé' => 'avance',
+                ])
+                ->setRequired(true),
+            DateField::new('date_incription')
+                ->setLabel('Date d\'inscription')
+                ->setFormat('dd MMMM yyyy')
+                ->setRequired(true),
         ];
     }
-    */
 
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
