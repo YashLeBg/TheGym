@@ -8,11 +8,19 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SportifController extends AbstractController
 {
+    private UserPasswordHasherInterface $encoder;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->encoder = $passwordHasher;
+    }
+
     #[Route('/api/sportifs', methods: ['GET'])]
     public function getSportifs(SportifRepository $repo): JsonResponse
     {
@@ -33,13 +41,13 @@ class SportifController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $sportif = new Sportif();
-        $sportif->setNom($data['nom']);
-        $sportif->setPrenom($data['prenom']);
-        $sportif->setEmail($data['email']);
-        $sportif->setPassword($data['password']);
-        $sportif->setRoles(['ROLE_SPORTIF']);
-        $sportif->setDateIncription(new \DateTime());
-        $sportif->setNiveauSportif($data['niveau_sportif']);
+        $sportif->setNom($data['nom'])
+            ->setPrenom($data['prenom'])
+            ->setEmail($data['email'])
+            ->setPassword($this->encoder->hashPassword($sportif, $data['password']))
+            ->setRoles(['ROLE_SPORTIF'])
+            ->setDateIncription(new \DateTime())
+            ->setNiveauSportif($data['niveau_sportif']);
 
         $manager->persist($sportif);
         $manager->flush();
@@ -52,11 +60,10 @@ class SportifController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $sportif->setNom($data['nom']);
-        $sportif->setPrenom($data['prenom']);
-        $sportif->setEmail($data['email']);
-        $sportif->setPassword($data['password']);
-        $sportif->setNiveauSportif($data['niveau_sportif']);
+        $sportif->setNom($data['nom'])
+            ->setPrenom($data['prenom'])
+            ->setEmail($data['email'])
+            ->setNiveauSportif($data['niveau_sportif']);
 
         $manager->flush();
 
