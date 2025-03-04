@@ -6,6 +6,7 @@ use App\Repository\ExerciceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ExerciceRepository::class)]
 class Exercice
@@ -13,24 +14,30 @@ class Exercice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private ?int $duree_estimee = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private ?string $difficulte = null;
 
     /**
      * @var Collection<int, Seance>
      */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'exercices')]
+    #[Groups(['exercice:read', 'exercice:write'])]
     private Collection $seances;
 
     public function __construct()
