@@ -15,38 +15,46 @@ class Seance
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write', 'exercice:read', 'exercice:write'])]
+    #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write', 'exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?\DateTimeInterface $date_heure = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?string $type_seance = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?string $theme_seance = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?Coach $coach = null;
 
     /**
      * @var Collection<int, Sportif>
      */
     #[ORM\ManyToMany(targetEntity: Sportif::class, inversedBy: 'seances')]
+    #[Groups(['seance:read', 'seance:write'])]
     private Collection $sportifs;
 
     /**
      * @var Collection<int, Exercice>
      */
     #[ORM\ManyToMany(targetEntity: Exercice::class, inversedBy: 'seances')]
+    #[Groups(['seance:read', 'seance:write'])]
     private Collection $exercices;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?string $statut = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['seance:read', 'seance:write'])]
     private ?string $niveau_seance = null;
 
     public function __construct()

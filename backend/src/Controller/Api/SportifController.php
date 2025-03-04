@@ -35,7 +35,7 @@ class SportifController extends AbstractController
     }
 
     #[Route('/api/sportifs', methods: ['POST'])]
-    public function createSportif(Request $request, EntityManagerInterface $manager, SportifRepository $repo): JsonResponse
+    public function createSportif(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

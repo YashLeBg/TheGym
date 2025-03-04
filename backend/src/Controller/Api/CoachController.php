@@ -35,7 +35,7 @@ class CoachController extends AbstractController
     }
 
     #[Route('/api/coachs', methods: ['POST'])]
-    public function createCoach(Request $request, EntityManagerInterface $manager, CoachRepository $repo): JsonResponse
+    public function createCoach(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

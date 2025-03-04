@@ -14,7 +14,7 @@ class Exercice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['exercice:read', 'exercice:write'])]
+    #[Groups(['exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
