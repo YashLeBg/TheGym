@@ -12,6 +12,7 @@ tmp/
 node_modules/
 package-lock.json
 .angular/
+frontend/src/assets
 
 # System files
 .DS_Store

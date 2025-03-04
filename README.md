@@ -78,7 +78,19 @@ cd frontend
 npm install
 ```
 
-2. Démarrer l'application
+2. Configurer les variables d'environnement (`src/assets/config.json`)
+
+```json
+{
+  "PROTOCOLE_WEB": "http"
+}
+OU
+{
+  "PROTOCOLE_WEB": "http"
+}
+```
+
+3. Démarrer l'application
 
 ```bash
 ng serve
