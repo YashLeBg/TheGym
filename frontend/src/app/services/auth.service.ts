@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
+import { PROTOCOLE_WEB } from '../../assets/config.json';
 
 export class AuthUser {
   constructor(
@@ -31,8 +32,8 @@ export class AuthUser {
 
 export class AuthService {
 
-  private apiUrlLogin = 'http://localhost:8008/api/login';
-  private apiUrlUserInfo = 'http://localhost:8008/api/user/me';
+  private apiUrlLogin = `${PROTOCOLE_WEB}://localhost:8008/api/login`;
+  private apiUrlUserInfo = `${PROTOCOLE_WEB}://localhost:8008/api/user/me`;
 
   private localStorageToken = 'currentToken';
 

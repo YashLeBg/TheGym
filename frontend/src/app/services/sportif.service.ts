@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Sportif } from '../models/sportif';
+import { PROTOCOLE_WEB } from '../../assets/config.json';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class SportifService {
-  private url = 'http://localhost:8008/api/sportifs';
+  private url = `${PROTOCOLE_WEB}://localhost:8008/api/sportifs`;
 
   constructor(
     private http: HttpClient
