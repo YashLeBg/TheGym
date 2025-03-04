@@ -24,6 +24,7 @@ class Sportif extends Utilisateur
      * @var Collection<int, Seance>
      */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'sportifs')]
+    #[Groups(['sportif:read', 'sportif:write'])]
     private Collection $seances;
 
     public function __construct()
