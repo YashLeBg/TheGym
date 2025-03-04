@@ -86,7 +86,7 @@ npm install
 }
 OU
 {
-  "PROTOCOLE_WEB": "http"
+  "PROTOCOLE_WEB": "https"
 }
 ```
 
