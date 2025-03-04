@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\FicheDePaieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FicheDePaieRepository::class)]
 class FicheDePaie
@@ -12,6 +13,7 @@ class FicheDePaie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['coach:read', 'coach:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'fichesDePaie')]
