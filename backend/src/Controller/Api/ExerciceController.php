@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ExerciceController extends AbstractController
@@ -28,7 +27,7 @@ class ExerciceController extends AbstractController
     }
 
     #[Route('/api/exercices', methods: ['POST'])]
-    public function createExercice(Request $request, EntityManagerInterface $manager, ExerciceRepository $repo): JsonResponse
+    public function createExercice(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
