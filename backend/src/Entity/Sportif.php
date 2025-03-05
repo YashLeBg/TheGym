@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SportifRepository::class)]
 class Sportif extends Utilisateur
@@ -18,6 +19,8 @@ class Sportif extends Utilisateur
 
     #[ORM\Column(length: 255)]
     #[Groups(['sportif:read', 'sportif:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['debutant', 'intermediaire', 'avance'])]
     private ?string $niveau_sportif = null;
 
     /**
@@ -25,6 +28,7 @@ class Sportif extends Utilisateur
      */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'sportifs')]
     #[Groups(['sportif:read', 'sportif:write'])]
+    #[Assert\Count(max: 3)]
     private Collection $seances;
 
     public function __construct()

@@ -8,16 +8,24 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CoachRepository::class)]
 class Coach extends Utilisateur
 {
     #[ORM\Column(type: Types::JSON)]
     #[Groups(['coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Count(min: 1)]
     private array $specialites = [];
 
     #[ORM\Column]
     #[Groups(['coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Type(type: 'float')]
+    #[Assert\Positive]
+    #[Assert\LessThanOrEqual(100)]
+    #[Assert\GreaterThanOrEqual(10)]
     private ?float $tarif_horaire = null;
 
     /**
@@ -25,6 +33,7 @@ class Coach extends Utilisateur
      */
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'coach')]
     #[Groups(['coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
     private Collection $seances;
 
     /**
@@ -32,6 +41,7 @@ class Coach extends Utilisateur
      */
     #[ORM\OneToMany(targetEntity: FicheDePaie::class, mappedBy: 'coach')]
     #[Groups(['coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
     private Collection $fichesDePaie;
 
     public function __construct()

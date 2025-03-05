@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -21,6 +22,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write'])]
+    #[Assert\Email]
     private ?string $email = null;
 
     /**
@@ -38,10 +40,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50)]
     #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 50)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 50)]
     private ?string $prenom = null;
 
     public function getId(): ?int

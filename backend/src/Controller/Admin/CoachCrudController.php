@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Sportif;
+use App\Entity\Coach;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -21,7 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class SportifCrudController extends AbstractCrudController
+class CoachCrudController extends AbstractCrudController
 {
     public function __construct(
         private UserPasswordHasherInterface $encoder
@@ -38,7 +39,7 @@ class SportifCrudController extends AbstractCrudController
 
     public static function getEntityFqcn(): string
     {
-        return Sportif::class;
+        return Coach::class;
     }
 
     public static function getSubscribedEvents()
@@ -53,12 +54,12 @@ class SportifCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             ChoiceField::new('roles')
-                ->setChoices(['Sportif' => 'ROLE_SPORTIF'])
+                ->setChoices(['Coach' => 'ROLE_COACH'])
                 ->setRequired(true)
                 ->hideWhenCreating()
                 ->hideOnIndex()
                 ->hideOnForm()
-                ->setFormTypeOption('data', 'ROLE_SPORTIF'),
+                ->setFormTypeOption('data', 'ROLE_COACH'),
             TextField::new('nom')
                 ->setLabel('Nom')
                 ->setRequired(true),
@@ -75,22 +76,25 @@ class SportifCrudController extends AbstractCrudController
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'Mot de passe'],
                     'second_options' => ['label' => 'Répéter le mot de passe'],
-                    'mapped' => false
                 ])
                 ->setRequired($pageName === Crud::PAGE_NEW)
                 ->onlyOnForms(),
-            ChoiceField::new('niveau_sportif')
-                ->setLabel('Niveau sportif')
+            ChoiceField::new('specialites')
+                ->setLabel('Spécialités')
                 ->setChoices([
-                    'Débutant' => 'debutant',
-                    'Intermédiaire' => 'intermediaire',
-                    'Avancé' => 'avance',
+                    'Bodybuilding' => 'bodybuilding',
+                    'Crossfit' => 'crossfit',
+                    'Powerlifting' => 'powerlifting',
+                    'Streetlifting' => 'streetlifting',
+                    'Yoga' => 'yoga',
+                    'Cardio' => 'cardio',
+                    'Calisthenics' => 'calisthenics'
                 ])
+                ->allowMultipleChoices()
                 ->setRequired(true),
-            DateField::new('date_incription')
-                ->setLabel('Date d\'inscription')
-                ->setFormat('dd MMMM yyyy')
-                ->setRequired(true),
+            NumberField::new('tarif_horaire')
+                ->setLabel('Tarif horaire (€/h)')
+                ->setRequired(true)
         ];
     }
 
