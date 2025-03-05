@@ -1,0 +1,35 @@
+<li
+  class="list-group-item d-flex justify-content-between align-items-center shadow-sm mb-3"
+>
+  <div class="d-flex flex-column justify-content-start">
+    <div class="d-flex align-items-center mb-2">
+      <h5 class="mb-0 me-2">{{ nomCoach }}</h5>
+      <a class="" routerLink="/coachs/{{ seance.coach.id }}">
+        <i class="fa-solid fa-circle-info"></i>
+      </a>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <p class="mb-0 .text-dark">({{ seance.type_seance }})</p>
+      <p class="my-auto text-muted">
+        <strong>Exercices: </strong>
+        <span *ngFor="let exercice of exercices"
+          >{{ exercice.nom }}
+          <a class="" routerLink="/exercices/{{ exercice.id }}">
+            <i class="fa-solid fa-circle-info"></i>
+          </a>
+          |
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <a
+      class="btn btn-primary btn-sm"
+      routerLink="/seances/{{ seance.id }}"
+    >
+      <i class="fa-solid fa-right-from-bracket"></i> Détails
+    </a>
+  </div>
+</li>

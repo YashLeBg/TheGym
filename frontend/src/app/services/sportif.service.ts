@@ -8,7 +8,7 @@ import { Sportif } from '../models/sportif';
 })
 
 export class SportifService {
-  private url = 'http://localhost:8008/api/sportifs';
+  private url = 'https://localhost:8008/api/sportifs';
 
   constructor(
     private http: HttpClient
