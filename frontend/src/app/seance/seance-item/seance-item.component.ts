@@ -21,15 +21,17 @@ export class SeanceItemComponent {
 
   ngOnInit(): void {
     if (this.seance.exercices.length > 0 && this.seance.coach.id > 0) {
-      this.exerciceService.getExercicesByIds(this.seance.exercices).subscribe({
-        next: (exercices) => {
-          this.exercices = exercices;
-          this.nomsExercices = this.exercices.map((e) => e.nom).join(', ');
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement des exercices :', error);
-        },
-      });
+      this.exerciceService
+        .getExercicesByIds(this.seance.exercices.map((e) => e.id))
+        .subscribe({
+          next: (exercices) => {
+            this.exercices = exercices;
+            this.nomsExercices = this.exercices.map((e) => e.nom).join(', ');
+          },
+          error: (error) => {
+            console.error('Erreur lors du chargement des exercices :', error);
+          },
+        });
 
       this.coachService.getCoach(this.seance.coach.id).subscribe({
         next: (coach) => {

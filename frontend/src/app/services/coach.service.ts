@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Seance } from './seance.service';
 
 export class Coach {
-  public specialities: string[] = [];
+  public specialites: string[] = [];
   public tarif_honoraire: number = 0;
-  public seances: number[] = [];
+  public seances: Seance[] = [];
   public fichesDePaie: number[] = [];
   public id: number = 0;
   public email: string = '';

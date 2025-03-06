@@ -7,7 +7,7 @@ export class Exercice {
   public nom: string = '';
   public description: string = '';
   public duree_estimee: number = 0;
-  public diffuculte: string = '';
+  public difficulte: string = '';
 }
 
 @Injectable({
@@ -18,11 +18,11 @@ export class ExerciceService {
 
   constructor(private http: HttpClient) {}
 
-  getExercice(id: number): Observable<Exercice> {
+  public getExercice(id: number): Observable<Exercice> {
     return this.http.get<Exercice>(`${this.apiUrlExercices}/${id}`);
   }
 
-  getExercicesByIds(ids: number[]): Observable<Exercice[]> {
+  public getExercicesByIds(ids: number[]): Observable<Exercice[]> {
     return this.http.get<Exercice[]>(
       `${this.apiUrlExercices}?ids=${ids.join(',')}`
     );
