@@ -58,7 +58,8 @@ class SeanceCrudController extends AbstractCrudController
                     'Programmée' => 'programmee',
                     'Terminée' => 'terminee'
                 ])
-                ->setRequired(true),
+                ->setRequired(true)
+                ->hideWhenCreating(),
             ChoiceField::new('niveau_seance')
                 ->setLabel('Niveau de la séance')
                 ->setChoices([
@@ -69,9 +70,7 @@ class SeanceCrudController extends AbstractCrudController
                 ->setRequired(true),
             AssociationField::new('coach')
                 ->setLabel('Coach')
-                ->setRequired(true),
-            AssociationField::new('sportifs')
-                ->setLabel('Sportifs')
+                ->setRequired(true)
         ];
     }
 
