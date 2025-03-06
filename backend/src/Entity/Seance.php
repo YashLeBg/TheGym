@@ -41,6 +41,7 @@ class Seance
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
     private ?Coach $coach = null;
 
     /**
@@ -55,6 +56,7 @@ class Seance
      */
     #[ORM\ManyToMany(targetEntity: Exercice::class, inversedBy: 'seances')]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\Count(min: 1)]
     private Collection $exercices;
 
     #[ORM\Column(length: 255)]

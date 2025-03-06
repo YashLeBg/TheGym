@@ -36,6 +36,12 @@ class Sportif extends Utilisateur
         $this->seances = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getNom() . ' ' . $this->getPrenom(); // Ou un autre format d'affichage
+    }
+
+
     public function getDateIncription(): ?\DateTimeInterface
     {
         return $this->date_incription;

@@ -6,6 +6,7 @@ use App\Entity\Seance;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -47,6 +48,9 @@ class SeanceCrudController extends AbstractCrudController
                     'Calisthenics' => 'calisthenics'
                 ])
                 ->setRequired(true),
+            AssociationField::new('exercices')
+                ->setLabel('Exercices')
+                ->setRequired(true),
             ChoiceField::new('statut')
                 ->setLabel('Statut')
                 ->setChoices([
@@ -62,7 +66,12 @@ class SeanceCrudController extends AbstractCrudController
                     'Intermédiaire' => 'intermediaire',
                     'Avancé' => 'avance'
                 ])
-                ->setRequired(true)
+                ->setRequired(true),
+            AssociationField::new('coach')
+                ->setLabel('Coach')
+                ->setRequired(true),
+            AssociationField::new('sportifs')
+                ->setLabel('Sportifs')
         ];
     }
 
