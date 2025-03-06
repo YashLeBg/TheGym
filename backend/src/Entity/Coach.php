@@ -50,6 +50,12 @@ class Coach extends Utilisateur
         $this->fichesDePaie = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getNom() . ' ' . $this->getPrenom(); // Ou un autre format d'affichage
+    }
+
+
     public function getSpecialites(): array
     {
         return $this->specialites;

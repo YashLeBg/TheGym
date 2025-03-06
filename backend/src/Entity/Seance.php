@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
 class Seance
@@ -20,19 +21,27 @@ class Seance
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThan('today')]
     private ?\DateTimeInterface $date_heure = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['collective', 'individuelle'])]
     private ?string $type_seance = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['bodybuilding', 'crossfit', 'powerlifting', 'streetlifting', 'yoga', 'cardio', 'calisthenics'])]
     private ?string $theme_seance = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
     private ?Coach $coach = null;
 
     /**
@@ -47,14 +56,19 @@ class Seance
      */
     #[ORM\ManyToMany(targetEntity: Exercice::class, inversedBy: 'seances')]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\Count(min: 1)]
     private Collection $exercices;
 
     #[ORM\Column(length: 255)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['prevue', 'programmee', 'terminee'])]
     private ?string $statut = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['debutant', 'intermediaire', 'avance'])]
     private ?string $niveau_seance = null;
 
     public function __construct()
