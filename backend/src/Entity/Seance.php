@@ -49,6 +49,7 @@ class Seance
      */
     #[ORM\ManyToMany(targetEntity: Sportif::class, inversedBy: 'seances')]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\Count(max: 3)]
     private Collection $sportifs;
 
     /**
