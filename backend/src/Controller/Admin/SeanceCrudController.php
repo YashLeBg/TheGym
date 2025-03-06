@@ -3,10 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Seance;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class SeanceCrudController extends AbstractCrudController
 {
@@ -20,7 +24,7 @@ class SeanceCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            DateField::new('date_heure')
+            DateTimeField::new('date_heure')
                 ->setLabel('Date et heure')
                 ->setFormat('dd/MM/yyyy HH:mm')
                 ->setRequired(true),
@@ -60,5 +64,13 @@ class SeanceCrudController extends AbstractCrudController
                 ])
                 ->setRequired(true)
         ];
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->setPermission(Action::NEW, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
+            ->setPermission(Action::EDIT, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
+            ->setPermission(Action::DELETE, 'ROLE_RESPONSABLE');
     }
 }
