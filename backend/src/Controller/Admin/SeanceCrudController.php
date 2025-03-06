@@ -8,10 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use Symfony\Bundle\SecurityBundle\Security;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SeanceCrudController extends AbstractCrudController
 {
@@ -58,7 +57,8 @@ class SeanceCrudController extends AbstractCrudController
                     'Programmée' => 'programmee',
                     'Terminée' => 'terminee'
                 ])
-                ->setRequired(true),
+                ->setRequired(true)
+                ->hideWhenCreating(),
             ChoiceField::new('niveau_seance')
                 ->setLabel('Niveau de la séance')
                 ->setChoices([
@@ -72,6 +72,7 @@ class SeanceCrudController extends AbstractCrudController
                 ->setRequired(true),
             AssociationField::new('sportifs')
                 ->setLabel('Sportifs')
+                ->hideWhenCreating()
         ];
     }
 
@@ -81,5 +82,28 @@ class SeanceCrudController extends AbstractCrudController
             ->setPermission(Action::NEW, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
             ->setPermission(Action::EDIT, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
             ->setPermission(Action::DELETE, 'ROLE_RESPONSABLE');
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Seance) {
+            return;
+        }
+
+        if (count($entityInstance->getSportifs()) > 3) {
+            throw new \RuntimeException("Vous ne pouvez pas ajouter plus de 3 sportifs.");
+        }
+
+        foreach ($entityInstance->getSportifs() as $sportif) {
+            if ($sportif->getNiveauSportif() !== $entityInstance->getNiveauSeance()) {
+                throw new \RuntimeException("Le niveau du sportif (" . $sportif->getNom() .  ") ne correspond pas au niveau de la séance.");
+            }
+        }
+
+        if (!in_array($entityInstance->getThemeSeance(), $entityInstance->getCoach()->getSpecialites())) {
+            throw new \RuntimeException("Le coach n'a pas la spécialité requise pour animer cette séance.");
+        }
+
+        parent::persistEntity($entityManager, $entityInstance);
     }
 }

@@ -19,7 +19,7 @@ class Seance
     #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write', 'exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
@@ -49,6 +49,7 @@ class Seance
      */
     #[ORM\ManyToMany(targetEntity: Sportif::class, inversedBy: 'seances')]
     #[Groups(['seance:read', 'seance:write'])]
+    #[Assert\Count(max: 3)]
     private Collection $sportifs;
 
     /**
@@ -59,11 +60,11 @@ class Seance
     #[Assert\Count(min: 1)]
     private Collection $exercices;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, options: ['default' => 'prevue'])]
     #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['prevue', 'programmee', 'terminee'])]
-    private ?string $statut = null;
+    private ?string $statut = 'prevue';
 
     #[ORM\Column(length: 255)]
     #[Groups(['seance:read', 'seance:write'])]
