@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmer la suppression{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Confirmer la suppression</h1>
+        
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Attention</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Vous êtes sur le point de supprimer définitivement la fiche de paie suivante :</p>
+                
+                <div class="alert alert-light">
+                    <p class="mb-1"><strong>Coach :</strong> {{ ficheDePaie.coach.nom }} {{ ficheDePaie.coach.prenom }}</p>
+                    <p class="mb-1"><strong>Période :</strong> {{ ficheDePaie.periode|date('m/Y') }}</p>
+                    <p class="mb-1"><strong>Heures :</strong> {{ ficheDePaie.totalHeures }}</p>
+                    <p class="mb-0"><strong>Montant :</strong> {{ ficheDePaie.montantTotal }} €</p>
+                </div>
+                
+                <p class="text-danger mt-3"><strong>Cette action est irréversible.</strong> Êtes-vous sûr de vouloir continuer ?</p>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin', {crudAction: 'index', crudControllerFqcn: 'App\\Controller\\Admin\\FicheDePaieCrudController'}) }}" class="btn btn-secondary">
+                        <i class="fa fa-arrow-left"></i> Annuler
+                    </a>
+                    
+                    <form method="post" action="{{ path('admin_fiche_de_paie_delete', {'id': ficheDePaie.id}) }}" class="d-inline">
+                        <input type="hidden" name="token" value="{{ csrf_token('delete-fiche-de-paie') }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash"></i> Confirmer la suppression
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 
