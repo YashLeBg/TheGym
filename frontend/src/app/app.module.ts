@@ -19,6 +19,8 @@ import { SeanceListComponent } from './seance/seance-list/seance-list.component'
 import { SeanceEditComponent } from './seance/seance-edit/seance-edit.component';
 import { CoachDetailComponent } from './coach/coach-detail/coach-detail.component';
 import { ExerciceDetailComponent } from './exercice/exercice-detail/exercice-detail.component';
+import { CoachListComponent } from './coach/coach-list/coach-list.component';
+import { CoachItemComponent } from './coach/coach-item/coach-item.component';
 
 registerLocaleData(localeFr);
 
@@ -34,6 +36,8 @@ registerLocaleData(localeFr);
     SeanceEditComponent,
     CoachDetailComponent,
     ExerciceDetailComponent,
+    CoachListComponent,
+    CoachItemComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [

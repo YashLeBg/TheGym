@@ -19,7 +19,7 @@ export class SeanceItemComponent {
     private coachService: CoachService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.seance.exercices.length > 0 && this.seance.coach.id > 0) {
       this.exerciceService
         .getExercicesByIds(this.seance.exercices.map((e) => e.id))

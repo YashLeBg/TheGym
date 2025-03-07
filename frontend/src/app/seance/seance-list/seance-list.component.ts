@@ -20,7 +20,7 @@ export class SeanceListComponent {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (!this.authService.currentAuthUserValue.isLogged()) {
       this.router.navigate(['/']);
       return;

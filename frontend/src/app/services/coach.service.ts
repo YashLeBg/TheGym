@@ -5,7 +5,7 @@ import { Seance } from './seance.service';
 
 export class Coach {
   public specialites: string[] = [];
-  public tarif_honoraire: number = 0;
+  public tarif_horaire: number = 0;
   public seances: Seance[] = [];
   public fichesDePaie: number[] = [];
   public id: number = 0;
