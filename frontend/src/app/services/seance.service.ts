@@ -25,8 +25,6 @@ export class Seance {
 export class SeanceService {
   private apiUrlSeances = 'https://localhost:8008/api/seances';
 
-  private localStorageToken = 'currentToken';
-
   private currentSeanceSubject: BehaviorSubject<Seance | null>;
   public currentSeance: Observable<Seance | null>;
 

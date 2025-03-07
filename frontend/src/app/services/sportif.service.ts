@@ -22,8 +22,6 @@ export class Sportif {
 export class SportifService {
   private apiUrlSportifs = 'https://localhost:8008/api/sportifs';
 
-  private localStorageToken = 'currentToken';
-
   private currentSeanceSubject: BehaviorSubject<Sportif | null>;
   public currentSeance: Observable<Sportif | null>;
 

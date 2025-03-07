@@ -8,20 +8,8 @@ export class AuthUser {
     public roles: string[] = []
   ) { }
 
-  isResponsable(): boolean {
-    return this.roles.includes("ROLE_RESPONSABLE");
-  }
-
-  isCoach(): boolean {
-    return this.roles.includes("ROLE_COACH");
-  }
-
-  isSportif(): boolean {
-    return this.roles.includes("ROLE_SPORTIF");
-  }
-
   isLogged(): boolean {
-    return this.email.length > 0;
+    return this.email.length > 0 && this.roles.includes('ROLE_SPORTIF');
   }
 }
 

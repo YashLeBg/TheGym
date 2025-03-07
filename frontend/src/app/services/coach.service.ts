@@ -21,8 +21,6 @@ export class Coach {
 export class CoachService {
   private apiUrlCoachs = 'https://localhost:8008/api/coachs';
 
-  private localStorageToken = 'currentToken';
-
   private currentSeanceSubject: BehaviorSubject<Coach | null>;
   public currentSeance: Observable<Coach | null>;
 
