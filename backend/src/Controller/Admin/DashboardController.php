@@ -25,19 +25,15 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Tableau de bord de TheGym');
+            ->setTitle('TheGym Admin');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::section('Gestion de la salle');
-        yield MenuItem::linkToCrud('Exercices', 'fa fa-dumbbell', Exercice::class);
-        yield MenuItem::linkToCrud('Séances', 'fa fa-calendar', Seance::class);
-
-        if ($this->isGranted('ROLE_RESPONSABLE')) {
-            yield MenuItem::section('Gestion des utilisateurs');
-            yield MenuItem::linkToCrud('Coachs', 'fa fa-user', Coach::class);
-            yield MenuItem::linkToCrud('Sportifs', 'fa fa-user', Sportif::class);
-        }
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToCrud('Exercices', 'fas fa-dumbbell', Exercice::class);
+        yield MenuItem::linkToCrud('Séances', 'fas fa-calendar-alt', Seance::class);
+        yield MenuItem::linkToCrud('Coachs', 'fas fa-user-tie', Coach::class);
+        yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-bar', 'admin_statistics');
     }
 }
