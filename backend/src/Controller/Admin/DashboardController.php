@@ -26,16 +26,18 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Tableau de bord de TheGym');
+            ->setTitle('TheGym Admin');
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Gestion de la salle');
-        yield MenuItem::linkToCrud('Exercices', 'fa fa-dumbbell', Exercice::class);
-        yield MenuItem::linkToCrud('Séances', 'fa fa-calendar', Seance::class);
+        yield MenuItem::linkToCrud('Exercices', 'fas fa-dumbbell', Exercice::class);
+        yield MenuItem::linkToCrud('Séances', 'fas fa-calendar-alt', Seance::class);
+        if ($this->isGranted('ROLE_RESPONSABLE')) {
+            yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-bar', 'admin_statistics');
+        }
 
-        // Section financière pour les coachs (uniquement leurs fiches de paie)
         if ($this->isGranted('ROLE_COACH')) {
             yield MenuItem::section('Mes finances');
             yield MenuItem::linkToCrud('Mes fiches de paie', 'fa fa-money-bill', FicheDePaie::class);
