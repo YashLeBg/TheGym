@@ -46,20 +46,23 @@ export class AuthService {
   }
 
   private updateUserInfo(token: string | null) {
-    this.currentTokenSubject.next(null);
-    this.currentAuthUserSubject.next(new AuthUser());
-
-    if (token) {
-      const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'skip-token': 'true' });
-      this.http.get<AuthUser>(this.apiUrlUserInfo, { headers }).subscribe({
-        next: data => {
-          if (data.email) {
-            this.currentTokenSubject.next(token);
-            this.currentAuthUserSubject.next(new AuthUser(data.email, data.roles));
-          }
-        }
-      });
+    if (!token) {
+      this.currentTokenSubject.next(null);
+      this.currentAuthUserSubject.next(new AuthUser());
+      localStorage.removeItem(this.localStorageToken);
+      return;
     }
+
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'skip-token': 'true' });
+    this.http.get<AuthUser>(this.apiUrlUserInfo, { headers }).subscribe({
+      next: data => {
+        if (data.email) {
+          this.currentTokenSubject.next(token);
+          this.currentAuthUserSubject.next(new AuthUser(data.email, data.roles));
+          localStorage.setItem(this.localStorageToken, token);
+        }
+      }
+    });
   }
 
   public login(email: string, password: string): Observable<boolean> {
@@ -76,6 +79,7 @@ export class AuthService {
 
   public logout() {
     this.updateUserInfo(null);
+    localStorage.removeItem(this.localStorageToken);
   }
 
 }
