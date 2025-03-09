@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Coach, CoachService } from '../../services/coach.service';
 import { Exercice, ExerciceService } from '../../services/exercice.service';
 import { Sportif, SportifService } from '../../services/sportif.service';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-seance-detail',
@@ -26,16 +25,11 @@ export class SeanceDetailComponent {
     private coachService: CoachService,
     private exerciceService: ExerciceService,
     private sportifService: SportifService,
-    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
-    if (!this.authService.currentAuthUserValue.isLogged()) {
-      this.router.navigate(['/']);
-      return;
-    }
     const id: number = this.route.snapshot.params['id'];
     this.seanceService.getSeance(Number(id)).subscribe({
       next: (seance) => {

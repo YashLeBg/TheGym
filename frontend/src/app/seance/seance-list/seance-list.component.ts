@@ -9,10 +9,9 @@ import { Router } from '@angular/router';
   styleUrl: './seance-list.component.css',
 })
 export class SeanceListComponent {
-  seances: Seance[] = [];
-  ok: boolean = false;
-  okBDD: boolean = false;
-  
+  public seances: Seance[] = [];
+  public ok: boolean = false;
+  public okBDD: boolean = false;
 
   constructor(
     private seanceService: SeanceService,
@@ -21,10 +20,6 @@ export class SeanceListComponent {
   ) {}
 
   public ngOnInit(): void {
-    if (!this.authService.currentAuthUserValue.isLogged()) {
-      this.router.navigate(['/']);
-      return;
-    }
     this.seanceService.getSeances().subscribe(
       (data) => {
         this.seances = data;

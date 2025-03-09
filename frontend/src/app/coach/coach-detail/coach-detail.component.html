@@ -30,15 +30,11 @@
           *ngFor="let seance of seances"
         >
           <div>
-            <b>Niveau</b> : {{ seance.niveau_seance }}<br />
-            <b>Thème</b> : {{ seance.theme_seance }}<br />
-            <b>Type</b> : {{ seance.type_seance }}<br />
-            <b>Date</b> : {{ seance.date_heure | date : "EEEE d MMMM y" }} à
-            {{ seance.date_heure | date : "HH'h'mm" }}<br />
+            <app-seance-item
+              *ngFor="let seance of seances"
+              [seance]="seance"
+            ></app-seance-item>
           </div>
-          <a class="btn btn-primary" routerLink="/seances/{{ seance.id }}">
-            <i class="fa-solid fa-right-from-bracket"></i> Détails
-          </a>
         </li>
       </ul>
     </div>

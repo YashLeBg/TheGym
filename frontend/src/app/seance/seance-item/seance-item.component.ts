@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Seance } from '../../services/seance.service';
 import { ExerciceService, Exercice } from '../../services/exercice.service';
 import { CoachService } from '../../services/coach.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-seance-item',
@@ -10,16 +11,21 @@ import { CoachService } from '../../services/coach.service';
 })
 export class SeanceItemComponent {
   @Input() seance: Seance = new Seance();
-  exercices: Exercice[] = [];
-  nomCoach: string = '';
-  nomsExercices: string = '';
+  public exercices: Exercice[] = [];
+  public nomCoach: string = '';
+  public nomsExercices: string = '';
+  public logged: boolean = false;
 
   constructor(
     private exerciceService: ExerciceService,
-    private coachService: CoachService
+    private coachService: CoachService,
+    private authService: AuthService
   ) {}
 
   public ngOnInit(): void {
+    if (this.authService.currentAuthUserValue.isLogged()) {
+      this.logged = true;
+    }
     if (this.seance.exercices.length > 0 && this.seance.coach.id > 0) {
       this.exerciceService
         .getExercicesByIds(this.seance.exercices.map((e) => e.id))

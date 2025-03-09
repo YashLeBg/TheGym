@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end" *ngIf="logged == true">
     <a
       class="btn btn-primary btn-sm"
       routerLink="/seances/{{ seance.id }}"
