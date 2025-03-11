@@ -17,13 +17,12 @@ export class RegisterComponent {
   ) { }
 
   onSubmit() {
-    this.sportifService.createSportif(this.model).subscribe(
-      (data) => {
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        console.log(error);
+    this.sportifService.register(this.model).subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: error => {
+        this.model.error = true;
+        console.error("Error while registering: ", error)
       }
-    );
+    });
   }
 }
