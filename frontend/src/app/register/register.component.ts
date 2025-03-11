@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SportifService } from '../services/sportif.service';
+import { SportifService } from '../../services/sportif.service';
 import { Router } from '@angular/router';
 
 @Component({

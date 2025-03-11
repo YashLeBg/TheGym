@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AuthInterceptor } from './services/auth.interceptor';
+import { AuthInterceptor } from '../services/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
