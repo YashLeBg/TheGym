@@ -16,6 +16,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { CoachListComponent } from './coach/coach-list/coach-list.component';
 import { CoachItemComponent } from './coach/coach-item/coach-item.component';
+import { CoachDetailComponent } from './coach/coach-detail/coach-detail.component';
 
 registerLocaleData(localeFr);
 
@@ -26,7 +27,8 @@ registerLocaleData(localeFr);
     LoginComponent,
     RegisterComponent,
     CoachListComponent,
-    CoachItemComponent
+    CoachItemComponent,
+    CoachDetailComponent
   ],
   imports: [
     BrowserModule,

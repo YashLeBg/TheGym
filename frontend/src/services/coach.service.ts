@@ -8,17 +8,17 @@ import { Coach } from '../models/coach';
 })
 
 export class CoachService {
-  private apiUrl = 'https://localhost:8008/api/coachs';
+  private apiUrlCoachs = 'https://localhost:8008/api/coachs';
 
   constructor(
     private http: HttpClient
   ) { }
 
   public getCoachs(): Observable<Coach[]> {
-    return this.http.get<Coach[]>(this.apiUrl);
+    return this.http.get<Coach[]>(this.apiUrlCoachs);
   }
 
   public getCoach(id: number): Observable<Coach> {
-    return this.http.get<Coach>(`${this.apiUrl}/${id}`);
+    return this.http.get<Coach>(`${this.apiUrlCoachs}/${id}`);
   }
 }
