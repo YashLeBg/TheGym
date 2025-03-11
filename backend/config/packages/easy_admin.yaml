@@ -1,5 +1,5 @@
 easy_admin:
-    design:
-        assets:
-            css:
-                - 'bundles/easyadmin/custom-styles.css' 
+  design:
+    assets:
+      css:
+        - "bundles/easyadmin/custom-styles.css"
