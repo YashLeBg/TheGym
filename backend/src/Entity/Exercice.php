@@ -21,7 +21,7 @@ class Exercice
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
-    #[Groups(['exercice:read'])]
+    #[Groups(['seance:read', 'exercice:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
