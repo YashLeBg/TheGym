@@ -9,19 +9,25 @@ import { HomeComponent } from './home/home.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { PlanningComponent } from './planning/planning.component';
+
+// Import FullCalendar module
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    PlanningComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    FullCalendarModule
   ],
   providers: [
     {
