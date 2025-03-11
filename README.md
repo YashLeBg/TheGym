@@ -28,14 +28,7 @@ git clone https://github.com/bastos-rcd/TheGym.git
 cd TheGym
 ```
 
-2. Installer les dépendances
-
-```bash
-cd backend
-composer install
-```
-
-3. Configurer les variables d'environnement (`.env`)
+2. Configurer les variables d'environnement (`.env`)
 
 ```text
 APP_ENV=dev
@@ -48,25 +41,39 @@ APP_SECRET=
 # DATABASE_URL="mysql://root:root@127.0.0.1:3306/gymdb?serverVersion=10.8.3-MariaDB&charset=utf8mb4"
 # --------------------------------------------------
 
-CORS_ALLOW_ORIGIN='^http?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
 
 JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
 JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=poop_my_gym
 ```
 
-4. Lancer la base de données et exécuter les migrations et les fixtures
+3. Installer les dépendances
 
 ```bash
-# Créer la base de données avec votre méthode préférée
+cd backend
+composer install
+```
+
+4. Créer la base de données `gymdb` avec votre méthode préférée
+
+5. Lancer la base de données et exécuter les migrations et les fixtures
+
+```bash
 php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 ```
 
-5. Démarrer le serveur Symfony
+6. Démarrer le serveur Symfony
 
 ```bash
 symfony server:start --port=8008
+```
+
+7. En cas de problème avec CORS lors de l'accès au serveur avec `https`
+
+```bash
+symfony server:ca:install
 ```
 
 ### Front-end
@@ -78,19 +85,7 @@ cd frontend
 npm install
 ```
 
-2. Configurer les variables d'environnement (`src/assets/config.json`)
-
-```json
-{
-  "PROTOCOLE_WEB": "http"
-}
-OU
-{
-  "PROTOCOLE_WEB": "https"
-}
-```
-
-3. Démarrer l'application
+2. Démarrer l'application
 
 ```bash
 ng serve
@@ -98,9 +93,9 @@ ng serve
 
 ## Utilisation
 
-- **Back-office** : Accessible via `http://localhost:8008/admin`
-- **API REST** : Disponible sur `http://localhost:8008/api`
-- **Front-end** : Accessible via `http://localhost:4200`
+- **Back-office** : Accessible via `https://localhost:8008/admin`
+- **API REST** : Disponible sur `https://localhost:8008/api`
+- **Front-end** : Accessible via `https://localhost:4200`
 
 ## Auteurs
 
