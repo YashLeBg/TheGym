@@ -41,7 +41,7 @@ class SeanceApiController extends AbstractController
         return $this->json($seance, 200, [], ['groups' => 'seance:read']);
     }
 
-    #[Route('/seances/{id}/register', methods: ['GET'])]
+    #[Route('/seances/{id}/register', methods: ['POST'])]
     #[IsGranted('ROLE_SPORTIF')]
     public function registerUserToSeance(Request $request, EntityManagerInterface $manager, SportifRepository $repoSportif, SeanceRepository $repoSeance, int $id): JsonResponse
     {
@@ -83,6 +83,45 @@ class SeanceApiController extends AbstractController
         }
 
         $seance->addSportif($sportif);
+        $manager->flush();
+
+        return $this->json($seance, JsonResponse::HTTP_OK, [], ['groups' => 'seance:read']);
+    }
+
+    #[Route('/seances/{id}/unregister', methods: ['POST'])]
+    #[IsGranted('ROLE_SPORTIF')]
+    public function unregisterUserToSeance(Request $request, EntityManagerInterface $manager, SportifRepository $repoSportif, SeanceRepository $repoSeance, int $id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $seance = $repoSeance->find($id);
+
+        if (!$seance) {
+            return $this->json(['error' => 'Seance not found'], 404);
+        }
+
+        if (empty($data['id'])) {
+            return $this->json(['error' => 'Missing required data'], 400);
+        }
+
+        $sportif = $repoSportif->find($data['id']);
+        if (!$sportif) {
+            return $this->json(['error' => 'Sportif not found'], 404);
+        }
+
+        $user = $this->security->getUser()->getUserIdentifier();
+        if ($user !== $sportif->getEmail()) {
+            return $this->json(['error' => 'Unauthorized'], 401);
+        }
+
+        if (!$seance->getSportifs()->contains($sportif)) {
+            return $this->json(['error' => 'User not registered to seance'], 400);
+        }
+
+        if ($seance->getStatut() === 'programmee' || $seance->getStatut() === 'terminee') {
+            return $this->json(['error' => 'Seance already in progress'], 400);
+        }
+
+        $seance->removeSportif($sportif);
         $manager->flush();
 
         return $this->json($seance, JsonResponse::HTTP_OK, [], ['groups' => 'seance:read']);
