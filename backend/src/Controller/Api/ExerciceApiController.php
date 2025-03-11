@@ -23,9 +23,16 @@ class ExerciceApiController extends AbstractController
         return $this->json($exercices, 200, [], ['groups' => 'exercice:read']);
     }
 
-    #[Route('/api/exercices/{id}', methods: ['GET'])]
-    public function getExercice(Exercice $exercice): JsonResponse
+    #[Route('/exercices/{id}', methods: ['GET'])]
+    #[IsGranted('ROLE_SPORTIF')]
+    public function getExercice(ExerciceRepository $repo, int $id): JsonResponse
     {
+        $exercice = $repo->find($id);
+
+        if (!$exercice) {
+            return $this->json(['error' => 'Exercice not found'], 404);
+        }
+
         return $this->json($exercice, 200, [], ['groups' => 'exercice:read']);
     }
 }
