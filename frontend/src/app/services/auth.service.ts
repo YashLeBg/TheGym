@@ -10,20 +10,8 @@ export class AuthUser {
     public id: number = 0
   ) { }
 
-  isResponsable(): boolean {
-    return this.roles.includes("ROLE_RESPONSABLE");
-  }
-
-  isCoach(): boolean {
-    return this.roles.includes("ROLE_COACH");
-  }
-
-  isSportif(): boolean {
-    return this.roles.includes("ROLE_SPORTIF");
-  }
-
   isLogged(): boolean {
-    return this.email.length > 0;
+    return this.email.length > 0 && this.roles.includes('ROLE_SPORTIF');
   }
 }
 
@@ -60,86 +48,23 @@ export class AuthService {
   }
 
   private updateUserInfo(token: string | null) {
-    this.currentTokenSubject.next(null);
-    this.currentAuthUserSubject.next(new AuthUser());
-    localStorage.removeItem(this.localStorageUserId);
-
-    if (token) {
-      const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'skip-token': 'true' });
-      this.http.get<any>(this.apiUrlUserInfo, { headers }).subscribe({
-        next: data => {
-          console.log('Réponse complète de l\'API user/me:', JSON.stringify(data));
-          if (data.email) {
-            this.currentTokenSubject.next(token);
-            
-            // Extraire l'ID de l'utilisateur avec une approche plus robuste
-            let userId = null;
-            
-            // Vérifier toutes les possibilités pour trouver l'ID
-            if (data.id !== undefined && data.id !== null) {
-              userId = data.id;
-              console.log('ID trouvé directement dans data.id:', userId);
-            } else if (data.sportif) {
-              if (typeof data.sportif === 'object' && data.sportif.id) {
-                userId = data.sportif.id;
-                console.log('ID trouvé dans data.sportif.id:', userId);
-              } else if (typeof data.sportif === 'number') {
-                userId = data.sportif;
-                console.log('ID trouvé dans data.sportif (number):', userId);
-              }
-            } else if (data.coach) {
-              if (typeof data.coach === 'object' && data.coach.id) {
-                userId = data.coach.id;
-                console.log('ID trouvé dans data.coach.id:', userId);
-              } else if (typeof data.coach === 'number') {
-                userId = data.coach;
-                console.log('ID trouvé dans data.coach (number):', userId);
-              }
-            } else if (data.user && data.user.id) {
-              userId = data.user.id;
-              console.log('ID trouvé dans data.user.id:', userId);
-            }
-            
-            // Parcourir toutes les propriétés pour trouver un ID
-            if (userId === null) {
-              console.log('Recherche approfondie de l\'ID dans toutes les propriétés...');
-              for (const key in data) {
-                if (key.toLowerCase().includes('id') && typeof data[key] === 'number') {
-                  userId = data[key];
-                  console.log(`ID trouvé dans data.${key}:`, userId);
-                  break;
-                } else if (typeof data[key] === 'object' && data[key] !== null) {
-                  if (data[key].id) {
-                    userId = data[key].id;
-                    console.log(`ID trouvé dans data.${key}.id:`, userId);
-                    break;
-                  }
-                }
-              }
-            }
-            
-            console.log('ID utilisateur final extrait:', userId);
-            
-            const user = new AuthUser(data.email, data.roles, userId || 0);
-            this.currentAuthUserSubject.next(user);
-            
-            if (userId) {
-              localStorage.setItem(this.localStorageUserId, userId.toString());
-              console.log('ID utilisateur stocké dans localStorage:', userId);
-            } else {
-              console.error('Aucun ID utilisateur trouvé dans la réponse');
-              // Utiliser un ID temporaire pour les tests (à supprimer en production)
-              const tempId = 1; // ID temporaire pour les tests
-              localStorage.setItem(this.localStorageUserId, tempId.toString());
-              console.warn('ID temporaire utilisé pour les tests:', tempId);
-            }
-          }
-        },
-        error: err => {
-          console.error('Erreur lors de la récupération des informations utilisateur:', err);
-        }
-      });
+    if (!token) {
+      this.currentTokenSubject.next(null);
+      this.currentAuthUserSubject.next(new AuthUser());
+      localStorage.removeItem(this.localStorageToken);
+      return;
     }
+
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'skip-token': 'true' });
+    this.http.get<AuthUser>(this.apiUrlUserInfo, { headers }).subscribe({
+      next: data => {
+        if (data.email) {
+          this.currentTokenSubject.next(token);
+          this.currentAuthUserSubject.next(new AuthUser(data.email, data.roles));
+          localStorage.setItem(this.localStorageToken, token);
+        }
+      }
+    });
   }
 
   public login(email: string, password: string): Observable<boolean> {
@@ -159,6 +84,7 @@ export class AuthService {
     localStorage.removeItem(this.localStorageToken);
     localStorage.removeItem(this.localStorageUserId);
     this.updateUserInfo(null);
+    localStorage.removeItem(this.localStorageToken);
   }
 
   public refreshUserInfo(): Observable<boolean> {
@@ -170,7 +96,7 @@ export class AuthService {
         observer.complete();
       });
     }
-    
+
     return new Observable(observer => {
       const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'skip-token': 'true' });
       this.http.get<any>(this.apiUrlUserInfo, { headers }).subscribe({
@@ -178,10 +104,10 @@ export class AuthService {
           console.log('Réponse de rafraîchissement user/me:', JSON.stringify(data));
           if (data.email) {
             this.currentTokenSubject.next(token);
-            
+
             // Extraire l'ID de l'utilisateur avec une approche robuste
             let userId = null;
-            
+
             // Vérifier toutes les possibilités pour trouver l'ID
             if (data.id !== undefined && data.id !== null) {
               userId = data.id;
@@ -200,7 +126,7 @@ export class AuthService {
             } else if (data.user && data.user.id) {
               userId = data.user.id;
             }
-            
+
             // Parcourir toutes les propriétés pour trouver un ID
             if (userId === null) {
               for (const key in data) {
@@ -215,12 +141,12 @@ export class AuthService {
                 }
               }
             }
-            
+
             console.log('ID utilisateur rafraîchi:', userId);
-            
+
             const user = new AuthUser(data.email, data.roles, userId || 0);
             this.currentAuthUserSubject.next(user);
-            
+
             if (userId) {
               localStorage.setItem(this.localStorageUserId, userId.toString());
               console.log('ID utilisateur rafraîchi stocké dans localStorage:', userId);

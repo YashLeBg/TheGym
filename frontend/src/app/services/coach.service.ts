@@ -56,4 +56,4 @@ export class CoachService {
       map(coach => this.getCoachFullName(coach))
     );
   }
-} 
+}

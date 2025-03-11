@@ -1,0 +1,28 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+
+{% block main %}
+    {{ parent() }}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableRows = document.querySelectorAll('table.datagrid tbody tr');
+            
+            tableRows.forEach(row => {
+                // Récupérer l'ID de la fiche de paie depuis les attributs de données
+                const entityId = row.getAttribute('data-id');
+                
+                if (entityId) {
+                    // Rendre la ligne cliquable, sauf pour les cellules contenant des actions
+                    row.style.cursor = 'pointer';
+                    
+                    row.addEventListener('click', function(e) {
+                        // Ne pas déclencher si on clique sur un bouton d'action
+                        if (!e.target.closest('.action-column') && !e.target.closest('a') && !e.target.closest('button')) {
+                            window.location.href = '{{ ea_url().setController("App\\\\Controller\\\\Admin\\\\FicheDePaieCrudController").setAction("viewPayslip") }}'.replace('viewPayslip', 'admin_fiche_de_paie_view') + '/' + entityId;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %} 

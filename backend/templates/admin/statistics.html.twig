@@ -1,0 +1,361 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Statistiques{% endblock %}
+
+{% block page_content %}
+    <style>
+        .dark-theme {
+            background-color: #222;
+            color: #eee;
+        }
+        .dark-theme .card {
+            background-color: #333;
+            border-color: #444;
+        }
+        .dark-theme .card-header {
+            background-color: #2c2c2c;
+            border-color: #444;
+        }
+        .dark-theme .table {
+            color: #eee;
+        }
+        .dark-theme .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark-theme hr {
+            border-color: #444;
+        }
+        .dark-theme .bg-light {
+            background-color: #2c2c2c !important;
+        }
+        .dark-theme .text-primary {
+            color: #6ea8fe !important;
+        }
+        .dark-theme .border-primary {
+            border-color: #6ea8fe !important;
+        }
+    </style>
+
+    <div class="content-body dark-theme">
+        <div class="row">
+            <!-- Fréquentation (nombre de séances par mois) -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Fréquentation mensuelle</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="sessionsByMonthChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taux de remplissage des séances -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Taux de remplissage des séances</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="fillRatesChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popularité des thèmes d'entraînement -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Popularité des thèmes d'entraînement</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="themePopularityChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercices les plus pratiqués -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Exercices les plus pratiqués</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Exercice</th>
+                                    <th>Fréquence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exercise, count in topExercises %}
+                                    <tr>
+                                        <td>{{ exercise }}</td>
+                                        <td>{{ count }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Séparateur -->
+        <div class="row mt-4 mb-4">
+            <div class="col-12">
+                <hr class="border-primary">
+                <h2 class="text-center mb-4">Statistiques des Coachs</h2>
+            </div>
+        </div>
+        
+        {% if mostProfitableCoach %}
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title text-primary">Coach le plus rentable: <strong>{{ mostProfitableCoach.coach }}</strong></h4>
+                                <p class="card-text">
+                                    <strong>Rentabilité:</strong> <span class="text-success fw-bold">{{ mostProfitableCoach.profitability }} €</span> |
+                                    <strong>Revenu:</strong> {{ mostProfitableCoach.revenue }} € |
+                                    <strong>Coût:</strong> {{ mostProfitableCoach.cost }} € |
+                                    <strong>Séances:</strong> {{ mostProfitableCoach.sessions }} |
+                                    <strong>Sportifs:</strong> {{ mostProfitableCoach.sportifs }}
+                                </p>
+                                <p class="card-text">
+                                    <strong>Spécialités:</strong> {{ mostProfitableCoach.specialities }}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="d-flex align-items-center justify-content-end h-100">
+                                    <div class="display-4 text-success">
+                                        <i class="fas fa-trophy me-2"></i> {{ (mostProfitableCoach.profitability / mostProfitableCoach.cost * 100)|round(1) }}% de rentabilité
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <!-- Évolution des séances par coach -->
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Évolution des séances par coach</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="coachSessionsChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance des coachs -->
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Performance globale des coachs</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Coach</th>
+                                    <th>Séances</th>
+                                    <th>Sportifs</th>
+                                    <th>Tarif horaire (€)</th>
+                                    <th>Coût total (€)</th>
+                                    <th>Revenu (€)</th>
+                                    <th>Rentabilité (€)</th>
+                                    <th>Spécialités</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for perf in coachMonthlyPerformance %}
+                                    <tr>
+                                        <td>{{ perf.coach }}</td>
+                                        <td>{{ perf.sessions }}</td>
+                                        <td>{{ perf.sportifs }}</td>
+                                        <td>{{ perf.hourlyRate }}</td>
+                                        <td>{{ perf.cost }}</td>
+                                        <td>{{ perf.revenue }}</td>
+                                        <td class="{% if perf.profitability > 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                            {{ perf.profitability }} ({{ (perf.profitability / perf.cost * 100)|round(1) }}%)
+                                        </td>
+                                        <td>{{ perf.specialities }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration du thème sombre pour Chart.js
+            Chart.defaults.color = '#eee';
+            Chart.defaults.borderColor = '#444';
+            
+            // Données pour les graphiques
+            const sessionsByMonth = {{ sessionsByMonth|raw }};
+            const sessionFillRates = {{ sessionFillRates|raw }};
+            const themePopularity = {{ themePopularity|raw }};
+            const coachSessionCountsByMonth = {{ coachSessionCountsByMonth|raw }};
+
+            // Configuration des couleurs
+            const colors = [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(199, 199, 199, 0.7)'
+            ];
+
+            // Graphique de fréquentation mensuelle
+            new Chart(
+                document.getElementById('sessionsByMonthChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: sessionsByMonth.labels,
+                        datasets: [{
+                            label: 'Nombre de séances',
+                            data: sessionsByMonth.data,
+                            backgroundColor: colors[0],
+                            borderColor: colors[0].replace('0.7', '1'),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // Graphique de taux de remplissage
+            new Chart(
+                document.getElementById('fillRatesChart'),
+                {
+                    type: 'pie',
+                    data: {
+                        labels: sessionFillRates.labels,
+                        datasets: [{
+                            data: sessionFillRates.data,
+                            backgroundColor: [
+                                'rgba(255, 51, 51, 0.8)',    // Rouge pour 0%
+                                'rgba(255, 153, 51, 0.8)',   // Orange-rouge pour 1-33%
+                                'rgba(255, 255, 51, 0.8)',   // Jaune pour 34-66%
+                                'rgba(153, 255, 51, 0.8)',   // Vert clair pour 67-99%
+                                'rgba(51, 204, 51, 0.8)',    // Vert pour 100%
+                            ],
+                            borderColor: [
+                                'rgba(255, 51, 51, 1)',      // Rouge pour 0%
+                                'rgba(255, 153, 51, 1)',     // Orange-rouge pour 1-33%
+                                'rgba(255, 255, 51, 1)',     // Jaune pour 34-66%
+                                'rgba(153, 255, 51, 1)',     // Vert clair pour 67-99%
+                                'rgba(51, 204, 51, 1)',      // Vert pour 100%
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            }
+                        }
+                    }
+                }
+            );
+
+            // Graphique de popularité des thèmes
+            new Chart(
+                document.getElementById('themePopularityChart'),
+                {
+                    type: 'doughnut',
+                    data: {
+                        labels: themePopularity.labels,
+                        datasets: [{
+                            data: themePopularity.data,
+                            backgroundColor: colors,
+                            borderColor: colors.map(color => color.replace('0.7', '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            }
+                        }
+                    }
+                }
+            );
+            
+            // Graphique de l'évolution des séances par coach
+            new Chart(
+                document.getElementById('coachSessionsChart'),
+                {
+                    type: 'line',
+                    data: {
+                        labels: coachSessionCountsByMonth.labels,
+                        datasets: coachSessionCountsByMonth.datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        });
+    </script>
+{% endblock %} 
