@@ -2,14 +2,13 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Coach;
 use App\Repository\CoachRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api', name: 'api_coach_')]
-class CoachController extends AbstractController
+class CoachApiController extends AbstractController
 {
     #[Route('/coachs', methods: ['GET'])]
     public function getCoachs(CoachRepository $repo): JsonResponse
@@ -20,8 +19,14 @@ class CoachController extends AbstractController
     }
 
     #[Route('/coachs/{id}', methods: ['GET'])]
-    public function getCoach(Coach $coach): JsonResponse
+    public function getCoach(CoachRepository $repo, int $id): JsonResponse
     {
+        $coach = $repo->find($id);
+
+        if (!$coach) {
+            return $this->json(['error' => 'Coach not found'], 404);
+        }
+
         return $this->json($coach, 200, [], ['groups' => 'coach:read']);
     }
 }
