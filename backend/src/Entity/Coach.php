@@ -14,13 +14,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coach extends Utilisateur
 {
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['coach:read', 'coach:write'])]
+    #[Groups(['coach:read'])]
     #[Assert\NotBlank]
     #[Assert\Count(min: 1)]
     private array $specialites = [];
 
     #[ORM\Column]
-    #[Groups(['coach:read', 'coach:write'])]
+    #[Groups(['coach:read'])]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'float')]
     #[Assert\Positive]
@@ -28,19 +28,12 @@ class Coach extends Utilisateur
     #[Assert\GreaterThanOrEqual(10)]
     private ?float $tarif_horaire = null;
 
-    /**
-     * @var Collection<int, Seance>
-     */
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'coach')]
-    #[Groups(['coach:read', 'coach:write'])]
+    #[Groups(['coach:read'])]
     #[Assert\NotBlank]
     private Collection $seances;
 
-    /**
-     * @var Collection<int, FicheDePaie>
-     */
     #[ORM\OneToMany(targetEntity: FicheDePaie::class, mappedBy: 'coach')]
-    #[Groups(['coach:read', 'coach:write'])]
     #[Assert\NotBlank]
     private Collection $fichesDePaie;
 
@@ -52,7 +45,7 @@ class Coach extends Utilisateur
 
     public function __toString(): string
     {
-        return $this->getNom() . ' ' . $this->getPrenom(); // Ou un autre format d'affichage
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
 
@@ -80,9 +73,6 @@ class Coach extends Utilisateur
         return $this;
     }
 
-    /**
-     * @return Collection<int, Seance>
-     */
     public function getSeances(): Collection
     {
         return $this->seances;
@@ -101,7 +91,6 @@ class Coach extends Utilisateur
     public function removeSeance(Seance $seance): static
     {
         if ($this->seances->removeElement($seance)) {
-            // set the owning side to null (unless already changed)
             if ($seance->getCoach() === $this) {
                 $seance->setCoach(null);
             }
@@ -110,9 +99,6 @@ class Coach extends Utilisateur
         return $this;
     }
 
-    /**
-     * @return Collection<int, FicheDePaie>
-     */
     public function getFichesDePaie(): Collection
     {
         return $this->fichesDePaie;
@@ -131,7 +117,6 @@ class Coach extends Utilisateur
     public function removeFichesDePaie(FicheDePaie $fichesDePaie): static
     {
         if ($this->fichesDePaie->removeElement($fichesDePaie)) {
-            // set the owning side to null (unless already changed)
             if ($fichesDePaie->getCoach() === $this) {
                 $fichesDePaie->setCoach(null);
             }

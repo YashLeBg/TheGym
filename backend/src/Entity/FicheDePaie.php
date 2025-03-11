@@ -13,7 +13,6 @@ class FicheDePaie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coach:read', 'coach:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'fichesDePaie')]

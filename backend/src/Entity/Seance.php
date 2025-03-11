@@ -16,58 +16,44 @@ class Seance
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['sportif:read', 'sportif:write', 'coach:read', 'coach:write', 'exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
+    #[Groups(['coach:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
     #[Assert\GreaterThan('today')]
     private ?\DateTimeInterface $date_heure = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['collective', 'individuelle'])]
     private ?string $type_seance = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['bodybuilding', 'crossfit', 'powerlifting', 'streetlifting', 'yoga', 'cardio', 'calisthenics'])]
     private ?string $theme_seance = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     private ?Coach $coach = null;
 
-    /**
-     * @var Collection<int, Sportif>
-     */
     #[ORM\ManyToMany(targetEntity: Sportif::class, inversedBy: 'seances')]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\Count(max: 3)]
     private Collection $sportifs;
 
-    /**
-     * @var Collection<int, Exercice>
-     */
     #[ORM\ManyToMany(targetEntity: Exercice::class, inversedBy: 'seances')]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\Count(min: 1)]
     private Collection $exercices;
 
     #[ORM\Column(length: 255, options: ['default' => 'prevue'])]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['prevue', 'programmee', 'terminee'])]
     private ?string $statut = 'prevue';
 
     #[ORM\Column(length: 255)]
-    #[Groups(['seance:read', 'seance:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['debutant', 'intermediaire', 'avance'])]
     private ?string $niveau_seance = null;
@@ -131,9 +117,6 @@ class Seance
         return $this;
     }
 
-    /**
-     * @return Collection<int, Sportif>
-     */
     public function getSportifs(): Collection
     {
         return $this->sportifs;
@@ -155,9 +138,6 @@ class Seance
         return $this;
     }
 
-    /**
-     * @return Collection<int, Exercice>
-     */
     public function getExercices(): Collection
     {
         return $this->exercices;
