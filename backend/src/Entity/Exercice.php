@@ -15,30 +15,26 @@ class Exercice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
+    #[Groups(['seance:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 10, max: 255)]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Positive]
     #[Assert\Range(min: 5, max: 60)]
     private ?int $duree_estimee = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['facile', 'moyen', 'difficile'])]
     private ?string $difficulte = null;
@@ -47,7 +43,6 @@ class Exercice
      * @var Collection<int, Seance>
      */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'exercices')]
-    #[Groups(['exercice:read', 'exercice:write'])]
     private Collection $seances;
 
     public function __construct()

@@ -43,8 +43,6 @@ security:
 
   access_control:
     - { path: ^/admin, roles: [ROLE_RESPONSABLE, ROLE_COACH] }
-    - { path: ^/api/login, roles: PUBLIC_ACCESS }
-    - { path: ^/api/coachs, roles: PUBLIC_ACCESS }
 
 when@test:
   security:
