@@ -7,27 +7,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SportifRepository::class)]
 class Sportif extends Utilisateur
 {
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['sportif:read', 'sportif:write'])]
     private ?\DateTimeInterface $date_incription = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['sportif:read', 'sportif:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['debutant', 'intermediaire', 'avance'])]
     private ?string $niveau_sportif = null;
 
-    /**
-     * @var Collection<int, Seance>
-     */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'sportifs')]
-    #[Groups(['sportif:read', 'sportif:write'])]
     #[Assert\Count(max: 3)]
     private Collection $seances;
 
@@ -38,7 +31,7 @@ class Sportif extends Utilisateur
 
     public function __toString(): string
     {
-        return $this->getNom() . ' ' . $this->getPrenom(); // Ou un autre format d'affichage
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
 
@@ -66,9 +59,6 @@ class Sportif extends Utilisateur
         return $this;
     }
 
-    /**
-     * @return Collection<int, Seance>
-     */
     public function getSeances(): Collection
     {
         return $this->seances;

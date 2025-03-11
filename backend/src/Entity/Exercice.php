@@ -15,39 +15,36 @@ class Exercice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['exercice:read', 'exercice:write', 'seance:read', 'seance:write'])]
+    #[Groups(['seance:read', 'exercice:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
+    #[Groups(['seance:read', 'exercice:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 10, max: 255)]
+    #[Groups(['exercice:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Positive]
     #[Assert\Range(min: 5, max: 60)]
+    #[Groups(['exercice:read'])]
     private ?int $duree_estimee = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['exercice:read', 'exercice:write'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['facile', 'moyen', 'difficile'])]
+    #[Groups(['exercice:read'])]
     private ?string $difficulte = null;
 
-    /**
-     * @var Collection<int, Seance>
-     */
     #[ORM\ManyToMany(targetEntity: Seance::class, mappedBy: 'exercices')]
-    #[Groups(['exercice:read', 'exercice:write'])]
+    #[Groups(['exercice:read'])]
     private Collection $seances;
 
     public function __construct()
@@ -114,9 +111,6 @@ class Exercice
         return $this;
     }
 
-    /**
-     * @return Collection<int, Seance>
-     */
     public function getSeances(): Collection
     {
         return $this->seances;
