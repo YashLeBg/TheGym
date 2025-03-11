@@ -7,20 +7,42 @@ use App\Entity\Exercice;
 use App\Entity\FicheDePaie;
 use App\Entity\Seance;
 use App\Entity\Sportif;
+use App\Repository\SeanceRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
+    private SeanceRepository $seanceRepository;
+    private Security $security;
+
+    public function __construct(SeanceRepository $seanceRepository, Security $security)
+    {
+        $this->seanceRepository = $seanceRepository;
+        $this->security = $security;
+    }
+
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        return $this->render('admin/dashboard.html.twig');
+        $parameters = [];
+        
+        // Si l'utilisateur est un coach, récupérer ses prochaines séances
+        if ($this->isGranted('ROLE_COACH')) {
+            $coach = $this->security->getUser();
+            if ($coach instanceof Coach) {
+                $upcomingSessions = $this->seanceRepository->findUpcomingSessionsByCoach($coach);
+                $parameters['upcomingSessions'] = $upcomingSessions;
+            }
+        }
+        
+        return $this->render('admin/dashboard.html.twig', $parameters);
     }
 
     public function configureDashboard(): Dashboard

@@ -43,6 +43,30 @@ class SeanceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Trouve les prochaines séances pour un coach
+     * 
+     * @param Coach $coach Le coach concerné
+     * @param int $limit Nombre maximum de séances à retourner
+     * @return Seance[] Tableau des prochaines séances
+     */
+    public function findUpcomingSessionsByCoach(Coach $coach, int $limit = 10): array
+    {
+        $now = new \DateTime();
+        
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.coach = :coach')
+            ->andWhere('s.date_heure >= :now')
+            ->andWhere('s.statut IN (:statuts)')
+            ->setParameter('coach', $coach)
+            ->setParameter('now', $now)
+            ->setParameter('statuts', ['prevue', 'programmee'])
+            ->orderBy('s.date_heure', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Seance[] Returns an array of Seance objects
 //     */

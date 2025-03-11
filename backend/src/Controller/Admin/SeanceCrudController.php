@@ -79,6 +79,7 @@ class SeanceCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
+            ->add(Action::INDEX, Action::DETAIL)
             ->setPermission(Action::NEW, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
             ->setPermission(Action::EDIT, $this->isGranted('ROLE_COACH') ? 'ROLE_COACH' : 'ROLE_RESPONSABLE')
             ->setPermission(Action::DELETE, 'ROLE_RESPONSABLE');
