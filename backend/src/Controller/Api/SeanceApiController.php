@@ -19,4 +19,17 @@ class SeanceApiController extends AbstractController
 
         return $this->json($seances, 200, [], ['groups' => 'seance:read']);
     }
+
+    #[Route('/seances/{id}', methods: ['GET'])]
+    #[IsGranted('ROLE_SPORTIF')]
+    public function getSeance(SeanceRepository $repo, int $id): JsonResponse
+    {
+        $seance = $repo->find($id);
+
+        if (!$seance) {
+            return $this->json(['error' => 'Seance not found'], 404);
+        }
+
+        return $this->json($seance, 200, [], ['groups' => 'seance:read']);
+    }
 }
