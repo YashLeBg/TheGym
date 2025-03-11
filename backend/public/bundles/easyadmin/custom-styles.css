@@ -1,0 +1,94 @@
+/* Custom styles for coach planning */
+.coach-planning .card-header {
+    background-color: #3c8dbc;
+    color: white;
+}
+
+/* Styles communs pour tous les badges */
+.coach-planning .badge {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
+
+.coach-planning .badge-info {
+    background-color: #0dcaf0;
+    color: #000000;
+    font-weight: bold;
+}
+
+.coach-planning .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+    font-weight: bold;
+}
+
+.coach-planning .badge-success {
+    background-color: #28a745;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.coach-planning .btn-primary {
+    background-color: #3c8dbc;
+    border-color: #367fa9;
+}
+
+.coach-planning .btn-primary:hover {
+    background-color: #367fa9;
+    border-color: #2e6da4;
+}
+
+.coach-planning .table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Style amélioré pour l'en-tête du tableau */
+.coach-planning .table th {
+    position: sticky;
+    top: 0;
+    background-color: #3c8dbc;
+    color: white;
+    z-index: 1;
+    padding: 12px 8px;
+    font-weight: 600;
+    border-bottom: 2px solid #2c6da0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Hover sur les lignes du tableau */
+.coach-planning .table tbody tr:hover {
+    background-color: #f0f7ff;
+}
+
+/* Fix for content-header width issue */
+.content-header {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Ensure proper container width */
+.content-wrapper, 
+.content, 
+.content-body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Fix for card layout */
+.card {
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    border-radius: 0.25rem;
+} 
