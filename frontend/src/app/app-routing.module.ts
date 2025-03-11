@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { PlanningComponent } from './planning/planning.component';
 import { SeanceListComponent } from './seance/seance-list/seance-list.component';
 import { SeanceDetailComponent } from './seance/seance-detail/seance-detail.component';
 import { CoachListComponent } from './coach/coach-list/coach-list.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'planning', component: PlanningComponent },
   { path: 'seances', component: SeanceListComponent },
   { path: 'seances/:id', component: SeanceDetailComponent },
   { path: 'coachs', component: CoachListComponent },
@@ -24,4 +26,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

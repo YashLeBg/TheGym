@@ -13,6 +13,10 @@ import { HomeComponent } from './home/home.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { PlanningComponent } from './planning/planning.component';
+
+import { FullCalendarModule } from '@fullcalendar/angular';
+
 import { SeanceDetailComponent } from './seance/seance-detail/seance-detail.component';
 import { SeanceItemComponent } from './seance/seance-item/seance-item.component';
 import { SeanceListComponent } from './seance/seance-list/seance-list.component';
@@ -29,13 +33,21 @@ registerLocaleData(localeFr);
     HomeComponent,
     LoginComponent,
     RegisterComponent,
+    PlanningComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    FullCalendarModule,
     SeanceDetailComponent,
     SeanceItemComponent,
     SeanceListComponent,
     CoachDetailComponent,
     ExerciceDetailComponent,
     CoachListComponent,
-    CoachItemComponent,
+    CoachItemComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
@@ -48,4 +60,4 @@ registerLocaleData(localeFr);
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

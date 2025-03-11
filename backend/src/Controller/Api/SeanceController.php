@@ -97,5 +97,6 @@ class SeanceController extends AbstractController
         $manager->flush();
 
         return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
-    }
+    }    
+
 }
