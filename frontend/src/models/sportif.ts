@@ -7,6 +7,6 @@ export class Sportif {
         public prenom: string,
         public dateInscription: Date,
         public niveau: string,
-        public seances: Array<number>
+        public seances: Array<{ id: number }>
     ) { }
 }

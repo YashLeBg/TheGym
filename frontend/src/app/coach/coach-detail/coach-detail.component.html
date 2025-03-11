@@ -22,10 +22,9 @@
             </ul>
             <h6 class="card-text mt-3">Séance(s) :</h6>
             <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center"
-                    *ngFor="let seance of seances">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <!-- TODO <app-seance-item *ngFor="let seance of seances" [seance]="seance"></app-seance-item> -->
+                        <app-seance-item *ngFor="let seance of seances" [seance]="seance"></app-seance-item>
                     </div>
                 </li>
             </ul>

@@ -23,19 +23,19 @@ class Seance
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
     #[Assert\GreaterThan('today')]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?\DateTimeInterface $date_heure = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['collective', 'individuelle'])]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?string $type_seance = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['bodybuilding', 'crossfit', 'powerlifting', 'streetlifting', 'yoga', 'cardio', 'calisthenics'])]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?string $theme_seance = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
@@ -51,19 +51,19 @@ class Seance
 
     #[ORM\ManyToMany(targetEntity: Exercice::class, inversedBy: 'seances')]
     #[Assert\Count(min: 1)]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     private Collection $exercices;
 
     #[ORM\Column(length: 255, options: ['default' => 'prevue'])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['prevue', 'programmee', 'terminee'])]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     private ?string $statut = 'prevue';
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['debutant', 'intermediaire', 'avance'])]
-    #[Groups(['seance:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     private ?string $niveau_seance = null;
 
     public function __construct()

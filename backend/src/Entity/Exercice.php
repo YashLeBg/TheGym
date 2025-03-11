@@ -15,19 +15,19 @@ class Exercice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['seance:read', 'exercice:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
-    #[Groups(['seance:read', 'exercice:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 10, max: 255)]
-    #[Groups(['exercice:read'])]
+    #[Groups(['exercice:read', 'seance:read'])]
     private ?string $description = null;
 
     #[ORM\Column]

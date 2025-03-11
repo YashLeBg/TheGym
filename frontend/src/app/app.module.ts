@@ -19,6 +19,8 @@ import { CoachItemComponent } from './coach/coach-item/coach-item.component';
 import { CoachDetailComponent } from './coach/coach-detail/coach-detail.component';
 import { TypeListComponent } from './seance/type-list/type-list.component';
 import { TypeItemComponent } from './seance/type-item/type-item.component';
+import { SeanceItemComponent } from './seance/seance-item/seance-item.component';
+import { SeanceListComponent } from './seance/seance-list/seance-list.component';
 
 registerLocaleData(localeFr);
 
@@ -32,7 +34,9 @@ registerLocaleData(localeFr);
     CoachItemComponent,
     CoachDetailComponent,
     TypeListComponent,
-    TypeItemComponent
+    TypeItemComponent,
+    SeanceItemComponent,
+    SeanceListComponent
   ],
   imports: [
     BrowserModule,

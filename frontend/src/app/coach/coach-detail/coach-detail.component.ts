@@ -18,7 +18,6 @@ export class CoachDetailComponent {
 
   constructor(
     private coachService: CoachService,
-    private seanceService: SeanceService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -29,16 +28,29 @@ export class CoachDetailComponent {
     this.coachService.getCoach(id).subscribe({
       next: (coach) => {
         this.coach = coach;
-
-        this.seanceService.getSeances().subscribe({
-          next: (seances) => {
-            this.seances = seances.filter((s) => s.coach === this.coach.id);
-            this.ok = true;
-          },
-          error: (error) => {
-            console.error('Erreur lors du chargement des séances :', error);
-          },
+        coach.seances.forEach((seance) => {
+          this.seances.push(
+            new Seance(
+              seance.id,
+              seance.date_heure,
+              seance.type_seance,
+              seance.theme_seance,
+              seance.statut,
+              seance.niveau_seance,
+              {
+                id: coach.id,
+                nom: coach.nom,
+                prenom: coach.prenom,
+                tarif_horaire: coach.tarif_horaire,
+                specialites: coach.specialites
+              },
+              [],
+              []
+            )
+          );
         });
+
+        this.ok = true;
       },
       error: () => {
         this.router.navigateByUrl('/seances');

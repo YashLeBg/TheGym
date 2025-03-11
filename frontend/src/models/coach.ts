@@ -6,6 +6,17 @@ export class Coach {
         public prenom: string,
         public specialites: string[],
         public tarif_horaire: number,
-        public seances: number[]
+        public seances: {
+            id: number,
+            date_heure: Date,
+            type_seance: string,
+            theme_seance: string,
+            exercices: {
+                id: number,
+                nom: string
+            }[],
+            statut: string,
+            niveau_seance: string
+        }[]
     ) { }
 }
