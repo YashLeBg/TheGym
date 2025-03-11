@@ -22,6 +22,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Assert\Email]
+    #[Groups(['coach:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
