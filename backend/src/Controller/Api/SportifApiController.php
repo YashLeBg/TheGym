@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api')]
 class SportifApiController extends AbstractController
 {
     private UserPasswordHasherInterface $encoder;
@@ -20,7 +21,7 @@ class SportifApiController extends AbstractController
         $this->encoder = $passwordHasher;
     }
 
-    #[Route('/api/sportifs', methods: ['POST'])]
+    #[Route('/sportifs', methods: ['POST'])]
     public function createSportif(Request $request, EntityManagerInterface $manager, SportifRepository $repo): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

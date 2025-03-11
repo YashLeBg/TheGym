@@ -16,7 +16,7 @@ class Seance
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coach:read', 'seance:read'])]
+    #[Groups(['coach:read', 'seance:read', 'exercice:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
