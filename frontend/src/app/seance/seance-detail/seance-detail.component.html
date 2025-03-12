@@ -1,0 +1,73 @@
+<div class="alert alert-dismissible alert-light" *ngIf="ok == false">
+    <strong>Chargement...</strong> Veuillez patienter
+</div>
+
+<div *ngIf="ok == true">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-end mb-2">
+                <div class="d-flex align-items-end">
+                    <h2 class="card-title mb-0">Séance {{ seance.theme_seance }}</h2>
+                    <span class="ms-2">
+                        <p class="mb-0">({{ seance.type_seance }})</p>
+                    </span>
+                </div>
+                <div>
+                    <p class="mb-0" *ngIf="seance.statut == 'prevue'">
+                        <i class="fa-solid fa-circle-chevron-right" style="color: #e4d00a"></i>
+                    </p>
+                    <p class="mb-0" *ngIf="seance.statut == 'programmee'">
+                        <i class="fa-solid fa-circle-check" style="color: #00de00"></i>
+                    </p>
+                    <p class="mb-0" *ngIf="seance.statut == 'terminee'">
+                        <i class="fa-solid fa-circle-minus" style="color: #ff8c00"></i>
+                    </p>
+                </div>
+            </div>
+
+            <h4 class="card-subtitle mb-2 text-muted">
+                Séance le {{ seance.date_heure | date : "EEEE d MMMM YYYY" }} à
+                {{ seance.date_heure | date : "HH'h'mm" }}
+            </h4>
+            <hr />
+            <h6 class="card-text">Coach :</h6>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <b>Prénom et nom</b> : {{ coach.prenom }} {{ coach.nom }}<br />
+                        <b>Email</b> : {{ coach.email }}<br />
+                    </div>
+                    <a class="btn btn-primary" routerLink="/coachs/{{ coach.id }}">
+                        <i class="fa-solid fa-right-from-bracket"></i> Détails
+                    </a>
+                </li>
+            </ul>
+            <h6 class="card-tex mt-3">Niveau :</h6>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>{{ seance.niveau_seance }}<br /></div>
+                </li>
+            </ul>
+            <h6 class="card-text mt-3">Exercice(s) :</h6>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    *ngFor="let exercice of exercices">
+                    <div>{{ exercice.nom }}<br /></div>
+                    <a class="btn btn-primary" routerLink="/exercices/{{ exercice.id }}">
+                        <i class="fa-solid fa-right-from-bracket"></i> Détails
+                    </a>
+                </li>
+            </ul>
+            <h6 class="card-text mt-3">Sportif(s) :</h6>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    *ngFor="let sportif of seance.sportifs">
+                    <div>
+                        <b>Prénom et nom</b> : {{ sportif.prenom }} {{ sportif.nom }}<br />
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card-footer text-muted">Garde la pêche</div>
+    </div>
+</div>

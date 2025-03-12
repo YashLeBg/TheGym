@@ -9,6 +9,7 @@ import { CoachDetailComponent } from './coach/coach-detail/coach-detail.componen
 import { TypeListComponent } from './seance/type-list/type-list.component';
 import { SeanceListComponent } from './seance/seance-list/seance-list.component';
 import { PlanningComponent } from './planning/planning.component';
+import { SeanceDetailComponent } from './seance/seance-detail/seance-detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'coachs/:id', component: CoachDetailComponent },
   { path: 'types', component: TypeListComponent },
   { path: 'seances', component: SeanceListComponent },
+  { path: 'seances/:id', component: SeanceDetailComponent },
   { path: 'planning', component: PlanningComponent }
 ];
 

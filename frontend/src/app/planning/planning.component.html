@@ -94,6 +94,10 @@
                         }">
                             {{ selectedSeance.statut | titlecase }}
                         </span>
+
+                        <a class="btn btn-primary btn-sm" routerLink="/seances/{{ selectedSeance.id }}">
+                            <i class="fa-solid fa-right-from-bracket"></i> Détails
+                        </a>
                     </div>
 
                     <div class="session-time mb-3">
