@@ -1,30 +1,21 @@
-<div
-  class="alert alert-dismissible alert-warning"
-  *ngIf="okBDD == false && ok == true"
->
-  <strong>Service non disponible...</strong> Veuillez réessayer plus tard
+<div class="alert alert-dismissible alert-warning" *ngIf="okBDD == false && ok == true">
+    <strong>Service non disponible...</strong> Veuillez réessayer plus tard
 </div>
 
-<div
-  class="alert alert-dismissible alert-light"
-  *ngIf="ok == false && okBDD == false"
->
-  <strong>Chargement...</strong> Veuillez patienter
+<div class="alert alert-dismissible alert-light" *ngIf="ok == false && okBDD == false">
+    <strong>Chargement...</strong> Veuillez patienter
 </div>
 
 <div *ngIf="ok == true && okBDD == true">
-  <h2>
-    <b>{{ seances.length }}</b> séance(s) enregistrée(s)
-  </h2>
+    <h2>
+        <b>{{ seances.length }}</b> séance(s) enregistrée(s)
+    </h2>
 
-  <table class="table table-hover">
-  </table>
-  <hr />
-  <ul class="list-group">
-    <app-seance-item
-      *ngFor="let seance of seances"
-      [seance]="seance"
-    ></app-seance-item>
-    <br />
-  </ul>
+    <table class="table table-hover">
+    </table>
+    <hr />
+    <ul class="list-group">
+        <app-seance-item *ngFor="let seance of seances" [seance]="seance"></app-seance-item>
+        <br />
+    </ul>
 </div>

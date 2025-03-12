@@ -22,6 +22,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Assert\Email]
+    #[Groups(['coach:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -31,13 +32,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['coach:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['coach:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
     private ?string $prenom = null;

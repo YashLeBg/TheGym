@@ -1,0 +1,53 @@
+<h2 class="w-full text-center mb-5">Mon Bilan</h2>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="tab" href="#seances" aria-selected="true" role="tab">Mes Séances</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#top" aria-selected="false" role="tab" tabindex="-1">Mon top
+            3</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#graphic" aria-selected="false" role="tab"
+            tabindex="-1">Graphique</a>
+    </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade active show" id="seances" role="tabpanel">
+        <table class="table table-hover mb-5">
+            <tbody>
+                <tr class="table-active">
+                    <td><b>{{ bilan?.duree_totale }}</b> minutes d'entrainement</td>
+                    <td><b>{{ bilan?.total_seances }}</b> séances effectuées depuis votre inscription</td>
+                    <td><b>{{ bilan?.total_seances_mois }}</b> séances effectuées en {{ date }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex flex-column">
+            <app-seance-item *ngFor="let seance of bilan?.seances" [seance]="seance"></app-seance-item>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="top" role="tabpanel">
+        <div *ngFor="let exercice of topExercices" class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title mb-0">{{ exercice.exercice.nom }}</h2>
+                <h4>Effectuées {{ exercice.value }} fois</h4>
+                <hr />
+                <h6 class="card-text">Description :</h6>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>{{ exercice.exercice.description }}<br /></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="graphic" role="tabpanel">
+        <div class="mx-auto" style="max-width: 500px;">
+            <canvas #myChart></canvas>
+        </div>
+    </div>
+</div>

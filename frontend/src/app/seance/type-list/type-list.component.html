@@ -1,0 +1,12 @@
+<div>
+    <h2>
+        Il y a <b>{{ types.length }}</b> types de séance dans notre salle de sport
+    </h2>
+
+    <table class="table table-hover"></table>
+    <hr />
+    <ul class="list-group">
+        <app-type-item *ngFor="let type of types" [type]="type"></app-type-item>
+        <br />
+    </ul>
+</div>

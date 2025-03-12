@@ -14,13 +14,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coach extends Utilisateur
 {
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['coach:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     #[Assert\NotBlank]
     #[Assert\Count(min: 1)]
     private array $specialites = [];
 
     #[ORM\Column]
-    #[Groups(['coach:read'])]
+    #[Groups(['coach:read', 'seance:read'])]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'float')]
     #[Assert\Positive]

@@ -1,35 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { CalendarOptions } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { SessionService } from '../services/session.service';
-import { CoachService } from '../services/coach.service';
-import { Session } from '../models/session';
-import { switchMap } from 'rxjs';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
+
+import { Seance } from '../../models/seance';
+import { SeanceService } from '../../services/seance.service';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-planning',
   templateUrl: './planning.component.html',
-  styleUrls: ['./planning.component.css']
+  styleUrl: './planning.component.css'
 })
-export class PlanningComponent implements OnInit {
-  sessions: Session[] = [];
-  filteredSessions: Session[] = [];
-  selectedSession: Session | null = null;
-  isLoading = false;
-  errorMessage = '';
-  isAuthenticated = false;
-  showOnlyMyRegistrations = false;
-  userId: number | null = null;
-  
+
+export class PlanningComponent {
+  public seances: Seance[] = [];
+  public user?: User;
+
+  public isLoading = false;
+  public showOnlyMyRegistrations = false;
+
+  public filteredSeances: Seance[] = [];
+  public selectedSeance?: Seance;
+
+  public errorMessage = '';
+
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
     headerToolbar: {
-      left: 'prev,next today',
+      left: 'prev,today,next',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
@@ -37,7 +41,7 @@ export class PlanningComponent implements OnInit {
     eventClick: this.handleEventClick.bind(this),
     height: 'auto',
     allDaySlot: false,
-    slotMinTime: '07:00:00',
+    slotMinTime: '06:00:00',
     slotMaxTime: '22:00:00',
     locale: 'fr',
     buttonText: {
@@ -83,73 +87,109 @@ export class PlanningComponent implements OnInit {
   };
 
   constructor(
-    private sessionService: SessionService,
-    private coachService: CoachService,
-    private authService: AuthService,
+    public authService: AuthService,
+    private seanceService: SeanceService,
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-    // Vérifier si l'utilisateur est connecté
-    this.checkAuthentication();
+  public ngOnInit(): void {
+    this.authService.currentAuthUser
+      .pipe(filter(user => user.id !== 0))
+      .subscribe((user) => {
+        if (!user.isLogged()) {
+          this.router.navigate(['/login']);
+          return;
+        }
+
+        this.user = this.authService.currentAuthUserValue;
+        this.loadSeances();
+      });
   }
 
-  // Vérifier si l'utilisateur est connecté
-  checkAuthentication(): void {
-    this.isAuthenticated = this.authService.currentAuthUserValue.isLogged();
-    
-    if (!this.isAuthenticated) {
-      this.errorMessage = 'Vous devez être connecté pour accéder au planning des séances.';
-      // Rediriger vers la page de connexion après un court délai
-      setTimeout(() => {
-        this.router.navigate(['/login'], { 
-          queryParams: { returnUrl: '/planning' } 
-        });
-      }, 3000);
-    } else {
-      // Si l'utilisateur est connecté, récupérer son ID
-      this.userId = this.authService.currentAuthUserValue.id;
-      // Rafraîchir les informations et charger les séances
-      this.refreshUserInfo();
-      this.loadSessions();
+  private getColorByType(type: string): string {
+    switch (type) {
+      case "bodybuilding":
+        return '#795548'; // Marron
+      case "crossfit":
+        return '#FF5722'; // Orange
+      case "powerlifting":
+        return '#9C27B0'; // Violet
+      case "streetlifting":
+        return '#2196F3'; // Bleu
+      case "yoga":
+        return '#4CAF50'; // Vert
+      case "cardio":
+        return '#E91E63'; // Rose
+      case "calisthenics":
+        return '#00BCD4'; // Cyan
+      default:
+        return '#FFC107'; // Jaune
     }
   }
 
-  // Rafraîchir les informations utilisateur
-  refreshUserInfo(): void {
-    this.authService.refreshUserInfo().subscribe({
-      next: (success) => {
-        console.log('Rafraîchissement des informations utilisateur:', success ? 'réussi' : 'échoué');
-        // Vérifier à nouveau l'authentification après le rafraîchissement
-        this.isAuthenticated = this.authService.currentAuthUserValue.isLogged();
-        
-        if (!this.isAuthenticated) {
-          this.errorMessage = 'Votre session a expiré. Veuillez vous reconnecter.';
-          setTimeout(() => {
-            this.router.navigate(['/login'], { 
-              queryParams: { returnUrl: '/planning' } 
-            });
-          }, 3000);
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors du rafraîchissement des informations utilisateur:', error);
-        this.errorMessage = 'Erreur lors de la vérification de votre session. Veuillez vous reconnecter.';
-      }
-    });
+  private filtrerSeances(): void {
+    if (this.showOnlyMyRegistrations) {
+      // Filtrer pour n'afficher que les séances où l'utilisateur est inscrit
+      this.filteredSeances = this.seances.filter((s) => {
+        // Vérifier si l'utilisateur est inscrit à cette séance
+        return s.sportifs.some(p => p.id === this.user!.id);
+      });
+    } else {
+      // Afficher toutes les séances
+      this.filteredSeances = [...this.seances];
+    }
+
+    this.updateCalendarEvents();
   }
 
-  loadSessions(): void {
+  private updateCalendarEvents(): void {
+    const events = this.filteredSeances.map(seance => {
+      // Formater l'heure pour l'affichage
+      const startTime = this.formatTime(seance.date_heure.toString());
+
+      const startTimeFormat = this.formatTime(seance.date_heure.toString());
+
+      // Ajouter une bordure spéciale pour les séances où l'utilisateur est inscrit
+      const borderColor = this.isUserRegistered(seance) ? '#FFD700' : '#000000'; // Bordure dorée pour les inscriptions
+
+      // Ajouter une classe CSS spéciale pour les séances où l'utilisateur est inscrit
+      const classNames = this.isUserRegistered(seance) ? ['fc-event-registered'] : [];
+
+      const colorSeance = this.getColorByType(seance.theme_seance);
+
+      const event = {
+        id: seance.id.toString(),
+        title: seance.theme_seance,
+        start: startTime,
+        color: colorSeance,
+        textColor: '#fff',
+        opacity: 1,
+        borderColor: borderColor,
+        classNames: classNames,
+        extendedProps: {
+          description: `${seance.theme_seance} | ${seance.niveau_seance}`,
+          coachName: `${seance.coach.prenom} | ${seance.coach.nom}`,
+          currentParticipants: seance.sportifs.length,
+          startTime: startTimeFormat,
+          statut: seance.statut,
+          isUserRegistered: this.isUserRegistered(seance)
+        }
+      };
+
+      return event;
+    });
+
+    this.calendarOptions.events = events;
+  }
+
+  public loadSeances(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
-    this.sessionService.getSessions().pipe(
-      switchMap(sessions => this.sessionService.enrichSessionsWithCoachNames(sessions))
-    ).subscribe({
-      next: (sessions) => {
-        console.log('Sessions enrichies avec les noms des coachs:', sessions);
-        this.sessions = sessions;
-        this.filterSessions();
+
+    this.seanceService.getSeances().subscribe({
+      next: (seances) => {
+        this.seances = seances;
+        this.filtrerSeances();
         this.isLoading = false;
       },
       error: (error) => {
@@ -160,265 +200,73 @@ export class PlanningComponent implements OnInit {
     });
   }
 
-  // Filtrer les sessions selon le mode d'affichage
-  filterSessions(): void {
-    if (this.showOnlyMyRegistrations) {
-      // Filtrer pour n'afficher que les séances où l'utilisateur est inscrit
-      this.filteredSessions = this.sessions.filter(session => {
-        // Vérifier si l'utilisateur est inscrit à cette séance
-        if (session.isUserRegistered) {
-          return true;
-        }
-        
-        // Vérifier dans la liste des participants si c'est un tableau
-        if (Array.isArray(session.participants)) {
-          return session.participants.some(p => p.id === this.userId);
-        }
-        
-        // Vérifier dans la liste des sportifs si disponible
-        if (Array.isArray(session.sportifs)) {
-          return session.sportifs.some(sportif => sportif.id === this.userId);
-        }
-        
-        return false;
-      });
-    } else {
-      // Afficher toutes les séances
-      this.filteredSessions = [...this.sessions];
-    }
-    this.updateCalendarEvents();
-  }
-
-  // Basculer entre "Toutes les séances" et "Mon planning"
-  toggleMyRegistrations(): void {
+  public toggleMyRegistrations(): void {
     this.showOnlyMyRegistrations = !this.showOnlyMyRegistrations;
-    this.filterSessions();
+    this.filtrerSeances();
   }
 
-  updateCalendarEvents(): void {
-    const events = this.filteredSessions.map(session => {
-      // Formater l'heure pour l'affichage
-      const startTime = this.formatTime(session.start);
-      const endTime = this.formatTime(session.end);
-      
-      // Déterminer le style en fonction du statut
-      let textColor = '#fff';
-      let opacity = 1;
-      
-      if (session.statut === 'annulee') {
-        opacity = 0.6;
-        textColor = '#f44336';
-      } else if (session.statut === 'terminee') {
-        opacity = 0.8;
-      }
-      
-      // Ajouter une bordure spéciale pour les séances où l'utilisateur est inscrit
-      const borderColor = session.isUserRegistered ? '#FFD700' : undefined; // Bordure dorée pour les inscriptions
-      
-      // Ajouter une classe CSS spéciale pour les séances où l'utilisateur est inscrit
-      const classNames = session.isUserRegistered ? ['fc-event-registered'] : [];
-      
-      const event = {
-        id: session.id.toString(),
-        title: session.title,
-        start: session.start,
-        end: session.end,
-        color: session.color,
-        textColor: textColor,
-        opacity: opacity,
-        borderColor: borderColor,
-        classNames: classNames,
-        extendedProps: {
-          description: session.description,
-          coachName: session.coachName,
-          currentParticipants: session.currentParticipants,
-          startTime: startTime,
-          endTime: endTime,
-          statut: session.statut,
-          isUserRegistered: session.isUserRegistered
-        }
-      };
-      console.log('Événement créé pour le calendrier:', event);
-      return event;
-    });
+  private formatTime(date: string): Date {
+    const d = new Date(date);
 
-    console.log('Tous les événements du calendrier:', events);
-    this.calendarOptions.events = events;
+    return d;
   }
 
-  // Formater l'heure au format HH:MM
-  private formatTime(date: Date | string): string {
-    if (!date) return '';
-    
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return d.getHours().toString().padStart(2, '0') + ':' + 
-           d.getMinutes().toString().padStart(2, '0');
+  public handleEventClick(info: any): void {
+    const seanceId = parseInt(info.event.id, 10);
+    this.selectedSeance = this.seances.find(s => s.id === seanceId) || undefined;
   }
 
-  handleEventClick(info: any): void {
-    console.log('Événement cliqué:', info);
-    const sessionId = parseInt(info.event.id, 10);
-    this.selectedSession = this.sessions.find(session => session.id === sessionId) || null;
-    console.log('Session sélectionnée:', this.selectedSession);
+  public closeDetails(): void {
+    this.selectedSeance = undefined;
   }
 
-  closeDetails(): void {
-    this.selectedSession = null;
-  }
+  public registerToSeance(seanceId: number): void {
+    if (!this.selectedSeance) return;
 
-  registerToSession(sessionId: number): void {
-    if (!this.selectedSession) return;
-    
-    // Vérifier si l'utilisateur est connecté
-    if (!this.authService.currentAuthUserValue.isLogged()) {
-      this.errorMessage = 'Vous devez être connecté pour vous inscrire à une séance.';
-      return;
-    }
-    
-    // Vérifier si l'ID utilisateur est disponible
-    if (!localStorage.getItem('userId')) {
-      this.errorMessage = 'Votre ID utilisateur n\'est pas disponible. Veuillez vous reconnecter.';
-      // Tenter de rafraîchir les informations utilisateur
-      this.refreshUserInfo();
-      return;
-    }
-    
     this.isLoading = true;
     this.errorMessage = '';
-    
-    this.sessionService.registerToSession(sessionId).subscribe({
+
+    this.seanceService.registerSportifToSeance(seanceId, this.user!.id).subscribe({
       next: () => {
-        console.log('Inscription réussie à la séance:', sessionId);
-        // Mettre à jour le nombre de participants
-        if (this.selectedSession) {
-          this.selectedSession.currentParticipants = (this.selectedSession.currentParticipants || 0) + 1;
-          this.selectedSession.isUserRegistered = true;
-        }
-        // Mettre à jour la session dans la liste principale
-        const sessionIndex = this.sessions.findIndex(s => s.id === sessionId);
-        if (sessionIndex !== -1) {
-          this.sessions[sessionIndex].isUserRegistered = true;
-          this.sessions[sessionIndex].currentParticipants = (this.sessions[sessionIndex].currentParticipants || 0) + 1;
-        }
-        // Recharger toutes les séances pour avoir les données à jour
-        this.filterSessions();
+        this.loadSeances();
+        this.closeDetails();
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors de l\'inscription à la séance:', error);
-        // Afficher un message d'erreur plus précis
-        if (error.message) {
-          this.errorMessage = error.message;
-        } else if (error.error && error.error.message) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = 'Impossible de s\'inscrire à la séance. Veuillez réessayer plus tard.';
-        }
+        this.errorMessage = 'Vous ne pouvez pas vous inscrire à cette séance.';
         this.isLoading = false;
       }
     });
   }
 
-  unregisterFromSession(sessionId: number): void {
-    if (!this.selectedSession) return;
-    
-    // Vérifier si l'utilisateur est connecté
-    if (!this.authService.currentAuthUserValue.isLogged()) {
-      this.errorMessage = 'Vous devez être connecté pour vous désinscrire d\'une séance.';
-      return;
-    }
-    
-    // Vérifier si l'ID utilisateur est disponible
-    if (!localStorage.getItem('userId')) {
-      this.errorMessage = 'Votre ID utilisateur n\'est pas disponible. Veuillez vous reconnecter.';
-      // Tenter de rafraîchir les informations utilisateur
-      this.refreshUserInfo();
-      return;
-    }
-    
+  public unregisterToSeance(seanceId: number): void {
+    if (!this.selectedSeance) return;
+
     this.isLoading = true;
     this.errorMessage = '';
-    
-    this.sessionService.unregisterFromSession(sessionId).subscribe({
+
+    this.seanceService.unregisterSportifToSeance(seanceId, this.user!.id).subscribe({
       next: () => {
-        console.log('Désinscription réussie de la séance:', sessionId);
-        // Mettre à jour le nombre de participants
-        if (this.selectedSession) {
-          const session = this.selectedSession;
-          if (typeof session.currentParticipants === 'number' && session.currentParticipants > 0) {
-            session.currentParticipants -= 1;
-          }
-          session.isUserRegistered = false;
-        }
-        // Mettre à jour la session dans la liste principale
-        const sessionIndex = this.sessions.findIndex(s => s.id === sessionId);
-        if (sessionIndex !== -1) {
-          this.sessions[sessionIndex].isUserRegistered = false;
-          if (typeof this.sessions[sessionIndex].currentParticipants === 'number' && this.sessions[sessionIndex].currentParticipants > 0) {
-            this.sessions[sessionIndex].currentParticipants -= 1;
-          }
-        }
-        // Mettre à jour le filtrage si nécessaire
-        this.filterSessions();
+        this.loadSeances();
+        this.closeDetails();
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors de la désinscription de la séance:', error);
-        // Afficher un message d'erreur plus précis
-        if (error.message) {
-          this.errorMessage = error.message;
-        } else if (error.error && error.error.message) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = 'Impossible de se désinscrire de la séance. Veuillez réessayer plus tard.';
-        }
+        this.errorMessage = 'Vous ne pouvez pas vous désinscrire de cette séance.';
         this.isLoading = false;
       }
     });
   }
 
-  // Fonction pour attribuer une couleur en fonction du type de séance
-  private getColorByType(type: string): string {
-    // Normaliser le type (minuscules, sans accents)
-    const normalizedType = type.toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-    
-    // Attribuer une couleur en fonction du type
-    switch (true) {
-      case normalizedType.includes('yoga'):
-        return '#4CAF50'; // Vert
-      case normalizedType.includes('pilates'):
-        return '#2196F3'; // Bleu
-      case normalizedType.includes('crossfit'):
-        return '#FF5722'; // Orange
-      case normalizedType.includes('spinning') || normalizedType.includes('velo') || normalizedType.includes('cycle'):
-        return '#9C27B0'; // Violet
-      case normalizedType.includes('cardio'):
-        return '#E91E63'; // Rose
-      case normalizedType.includes('aqua') || normalizedType.includes('natation'):
-        return '#00BCD4'; // Cyan
-      case normalizedType.includes('stretching') || normalizedType.includes('etirement'):
-        return '#FFC107'; // Jaune
-      case normalizedType.includes('musculation') || normalizedType.includes('force') || normalizedType.includes('powerlifting'):
-        return '#795548'; // Marron
-      default:
-        return this.getRandomColor();
-    }
+  public getDateEnd(d: string): Date {
+    const date = new Date(d);
+    date.setHours(date.getHours() + 1);
+    return date;
   }
 
-  // Fonction utilitaire pour générer une couleur aléatoire
-  private getRandomColor(): string {
-    const colors = [
-      '#4CAF50', // Vert
-      '#2196F3', // Bleu
-      '#FF5722', // Orange
-      '#9C27B0', // Violet
-      '#E91E63', // Rose
-      '#00BCD4', // Cyan
-      '#FFC107', // Jaune
-      '#795548'  // Marron
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
+  public isUserRegistered(seance: Seance): boolean {
+    return seance.sportifs.some(sportif => sportif.id === this.user!.id);
   }
 }

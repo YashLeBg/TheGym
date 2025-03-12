@@ -1,56 +1,60 @@
 import { Component, Input } from '@angular/core';
-import { Seance } from '../../services/seance.service';
-import { ExerciceService, Exercice } from '../../services/exercice.service';
-import { CoachService } from '../../services/coach.service';
-import { AuthService } from '../../services/auth.service';
+import { Seance } from '../../../models/seance';
+import { Exercice } from '../../../models/exercice';
+import { Coach } from '../../../models/coach';
+import { AuthService } from '../../../services/auth.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-seance-item',
   templateUrl: './seance-item.component.html',
-  styleUrl: './seance-item.component.css',
+  styleUrl: './seance-item.component.css'
 })
+
 export class SeanceItemComponent {
-  @Input() seance: Seance = new Seance();
+  @Input() seance!: Seance;
   public exercices: Exercice[] = [];
-  public nomCoach: string = '';
-  public nomsExercices: string = '';
-  public logged: boolean = false;
+  public coach: Coach = new Coach(0, '', '', '', [], 0, []);
 
   constructor(
-    private exerciceService: ExerciceService,
-    private coachService: CoachService,
-    private authService: AuthService
-  ) {}
+    public authService: AuthService
+  ) { }
 
   public ngOnInit(): void {
-    if (this.authService.currentAuthUserValue.isLogged()) {
-      this.logged = true;
-    }
-    if (this.seance.exercices.length > 0 && this.seance.coach.id > 0) {
-      this.exerciceService
-        .getExercicesByIds(this.seance.exercices.map((e) => e.id))
-        .subscribe({
-          next: (exercices) => {
-            this.exercices = exercices;
-            this.nomsExercices = this.exercices.map((e) => e.nom).join(', ');
-          },
-          error: (error) => {
-            console.error('Erreur lors du chargement des exercices :', error);
-          },
+    this.authService.currentAuthUser.pipe(filter(user => user.id !== 0)).subscribe((user) => {
+      if (user.isLogged()) {
+        this.seance.exercices.forEach((exercice) => {
+          this.exercices.push(
+            new Exercice(
+              exercice.id,
+              exercice.nom,
+              exercice.description,
+              0,
+              "",
+              []
+            )
+          );
         });
+      }
+    });
 
-      this.coachService.getCoach(this.seance.coach.id).subscribe({
-        next: (coach) => {
-          this.nomCoach = `${coach.prenom} ${coach.nom}`;
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement du coach :', error);
-        },
-      });
-    } else {
-      console.error("Pas d'exercices ou coach pour la séance");
-      this.nomsExercices = 'Aucun exercice';
-      this.nomCoach = 'Coach introuvable';
-    }
+    this.coach = new Coach(
+      this.seance.coach.id,
+      "",
+      this.seance.coach.nom,
+      this.seance.coach.prenom,
+      this.coach.specialites,
+      this.coach.tarif_horaire,
+      []
+    );
+  }
+
+  public getDate(d: string): string {
+    const date = new Date(d);
+    return date.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }) + ", " + date.toLocaleTimeString('fr-FR');
   }
 }
