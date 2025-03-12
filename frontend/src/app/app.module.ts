@@ -23,6 +23,7 @@ import { SeanceItemComponent } from './seance/seance-item/seance-item.component'
 import { SeanceListComponent } from './seance/seance-list/seance-list.component';
 import { PlanningComponent } from './planning/planning.component';
 import { SeanceDetailComponent } from './seance/seance-detail/seance-detail.component';
+import { ExerciceDetailComponent } from './exercice/exercice-detail/exercice-detail.component';
 
 registerLocaleData(localeFr);
 
@@ -40,7 +41,8 @@ registerLocaleData(localeFr);
     SeanceItemComponent,
     SeanceListComponent,
     PlanningComponent,
-    SeanceDetailComponent
+    SeanceDetailComponent,
+    ExerciceDetailComponent
   ],
   imports: [
     BrowserModule,
