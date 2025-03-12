@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Coach } from '../../../models/coach';
 import { CoachService } from '../../../services/coach.service';
-import { SeanceService } from '../../../services/seance.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Seance } from '../../../models/seance';
 

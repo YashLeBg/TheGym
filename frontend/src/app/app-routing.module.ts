@@ -8,6 +8,7 @@ import { CoachListComponent } from './coach/coach-list/coach-list.component';
 import { CoachDetailComponent } from './coach/coach-detail/coach-detail.component';
 import { TypeListComponent } from './seance/type-list/type-list.component';
 import { SeanceListComponent } from './seance/seance-list/seance-list.component';
+import { PlanningComponent } from './planning/planning.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'coachs', component: CoachListComponent },
   { path: 'coachs/:id', component: CoachDetailComponent },
   { path: 'types', component: TypeListComponent },
-  { path: 'seances', component: SeanceListComponent }
+  { path: 'seances', component: SeanceListComponent },
+  { path: 'planning', component: PlanningComponent }
 ];
 
 @NgModule({

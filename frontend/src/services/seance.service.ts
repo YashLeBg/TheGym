@@ -21,4 +21,13 @@ export class SeanceService {
   public getSeance(id: number): Observable<Seance> {
     return this.http.get<Seance>(`${this.apiUrlSeances}/${id}`);
   }
+
+  public registerSportifToSeance(id: number, sportifId: number): Observable<any> {
+    console.log('registerSportifToSeance', id, sportifId);
+    return this.http.post<Seance>(`${this.apiUrlSeances}/${id}/register`, { id: sportifId });
+  }
+
+  public unregisterSportifToSeance(id: number, sportifId: number): Observable<any> {
+    return this.http.post<Seance>(`${this.apiUrlSeances}/${id}/unregister`, { id: sportifId });
+  }
 }

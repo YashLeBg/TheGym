@@ -5,6 +5,7 @@ import { Coach } from '../../../models/coach';
 import { AuthService } from '../../../services/auth.service';
 import { CoachService } from '../../../services/coach.service';
 import { ExerciceService } from '../../../services/exercice.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-seance-item',
@@ -22,21 +23,24 @@ export class SeanceItemComponent {
   ) { }
 
   public ngOnInit(): void {
-    if (this.authService.currentAuthUserValue.isLogged()) {
-      this.seance.exercices.forEach((exercice) => {
-        this.exercices.push(
-          new Exercice(
-            exercice.id,
-            exercice.nom,
-            exercice.description,
-            0,
-            "",
-            []
-          )
-        );
-      });
-    }
+    this.authService.currentAuthUser.pipe(filter(user => user.id !== 0)).subscribe((user) => {
+      if (user.isLogged()) {
+        this.seance.exercices.forEach((exercice) => {
+          this.exercices.push(
+            new Exercice(
+              exercice.id,
+              exercice.nom,
+              exercice.description,
+              0,
+              "",
+              []
+            )
+          );
+        });
+      }
+    });
 
+    console.log(this.seance.coach);
     this.coach = new Coach(
       this.seance.coach.id,
       "",
