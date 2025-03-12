@@ -3,8 +3,6 @@ import { Seance } from '../../../models/seance';
 import { Exercice } from '../../../models/exercice';
 import { Coach } from '../../../models/coach';
 import { AuthService } from '../../../services/auth.service';
-import { CoachService } from '../../../services/coach.service';
-import { ExerciceService } from '../../../services/exercice.service';
 import { filter } from 'rxjs';
 
 @Component({
@@ -40,7 +38,6 @@ export class SeanceItemComponent {
       }
     });
 
-    console.log(this.seance.coach);
     this.coach = new Coach(
       this.seance.coach.id,
       "",

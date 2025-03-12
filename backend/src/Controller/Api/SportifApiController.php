@@ -91,6 +91,14 @@ class SportifApiController extends AbstractController
             }
         }
 
+        $top3 = [];
+        foreach ($top_3_exercices as $key => $value) {
+            $top3[] = [
+                'id' => $key,
+                'value' => $value
+            ];
+        }
+
         $bilan = [
             'seances' => $seances,
             'total_seances_mois' => count(array_filter($seances->toArray(), fn($seance) => $seance->getDateHeure()->format('m') === (new \DateTime())->format('m'))),
@@ -104,7 +112,7 @@ class SportifApiController extends AbstractController
                 'cardio' => count(array_filter($seances->toArray(), fn($seance) => $seance->getThemeSeance() === 'cardio')),
                 'calisthenics' => count(array_filter($seances->toArray(), fn($seance) => $seance->getThemeSeance() === 'calisthenics')),
             ],
-            'top_3_exercices' => array_slice($top_3_exercices, 0, 3, true),
+            'top_3_exercices' => $top3,
             'duree_totale' => $duree_totale
         ];
 

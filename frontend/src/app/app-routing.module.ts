@@ -11,6 +11,7 @@ import { SeanceListComponent } from './seance/seance-list/seance-list.component'
 import { PlanningComponent } from './planning/planning.component';
 import { SeanceDetailComponent } from './seance/seance-detail/seance-detail.component';
 import { ExerciceDetailComponent } from './exercice/exercice-detail/exercice-detail.component';
+import { BilanComponent } from './bilan/bilan.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'seances', component: SeanceListComponent },
   { path: 'seances/:id', component: SeanceDetailComponent },
   { path: 'planning', component: PlanningComponent },
-  { path: 'exercices/:id', component: ExerciceDetailComponent }
+  { path: 'exercices/:id', component: ExerciceDetailComponent },
+  { path: 'bilan', component: BilanComponent }
 ];
 
 @NgModule({

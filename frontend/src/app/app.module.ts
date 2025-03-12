@@ -6,6 +6,7 @@ import localeFr from '@angular/common/locales/fr';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { BilanComponent } from './bilan/bilan.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from '../services/auth.interceptor';
@@ -42,7 +43,8 @@ registerLocaleData(localeFr);
     SeanceListComponent,
     PlanningComponent,
     SeanceDetailComponent,
-    ExerciceDetailComponent
+    ExerciceDetailComponent,
+    BilanComponent
   ],
   imports: [
     BrowserModule,

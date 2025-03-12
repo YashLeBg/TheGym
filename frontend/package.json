@@ -22,6 +22,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
+    "chart.js": "^4.4.8",
     "frontend": "file:",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
