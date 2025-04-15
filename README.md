@@ -24,7 +24,7 @@ Ce projet vise à développer une application web pour la gestion d'un club de s
 1. Cloner le projet
 
 ```bash
-git clone https://github.com/bastos-rcd/TheGym.git
+git clone https://github.com/YashLeBg/TheGym.git
 cd TheGym
 ```
 
